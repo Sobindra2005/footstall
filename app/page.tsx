@@ -4,11 +4,37 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Search, MapPin, Calendar, Activity, Users, Star, ArrowRight, Shield, Swords, Target } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
+import Lenis from "lenis";
 
 const heroSteps = [
-  { id: "pass", image: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1920&q=80" },
-  { id: "score", image: "https://images.unsplash.com/photo-1459865264687-595d652de67e?auto=format&fit=crop&w=1920&q=80" },
-  { id: "repeat", image: "https://images.unsplash.com/photo-1526232761682-d26e03ac148e?auto=format&fit=crop&w=1920&q=80" }
+  { 
+    id: "pass", 
+    images: [
+      { url: "/pass/1.jpg", top: "5%", left: "5%", rotate: -12, delay: 0 },
+      { url: "/pass/2.jpg", top: "15%", left: "75%", rotate: 8, delay: 0.1 },
+      { url: "/pass/3.jpg", top: "55%", left: "8%", rotate: -5, delay: 0.2 },
+      { url: "/pass/4.jpg", top: "65%", left: "70%", rotate: -15, delay: 0.15 },
+      { url: "/pass/5.jpg", top: "35%", left: "85%", rotate: 12, delay: 0.25 },
+      { url: "/pass/6.jpg", top: "40%", left: "-5%", rotate: 6, delay: 0.05 }
+    ] 
+  },
+  { 
+    id: "score", 
+    images: [
+      { url: "/shoot/1.jpg", top: "10%", left: "70%", rotate: 10, delay: 0 },
+      { url: "/shoot/2.jpg", top: "50%", left: "5%", rotate: -8, delay: 0.1 },
+      { url: "/shoot/3.jpg", top: "60%", left: "65%", rotate: -5, delay: 0.2 },
+      { url: "/shoot/4.jpg", top: "5%", left: "20%", rotate: 15, delay: 0.15 },
+      { url: "/shoot/5.jpg", top: "80%", left: "25%", rotate: -12, delay: 0.25 },
+      { url: "/shoot/6.jpg", top: "35%", left: "80%", rotate: 6, delay: 0.05 }
+    ] 
+  },
+  { 
+    id: "repeat", 
+    isFullBackground: true,
+    image: "https://images.unsplash.com/photo-1526232761682-d26e03ac148e?auto=format&fit=crop&w=1920&q=80",
+    images: [] 
+  }
 ];
 
 const tacticsData = [
@@ -102,6 +128,18 @@ const tacticsData = [
 ];
 
 export default function Home() {
+  useEffect(() => {
+    const lenis = new Lenis();
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeTacticId, setActiveTacticId] = useState("diamond");
   const activeTactic = tacticsData.find(t => t.id === activeTacticId) || tacticsData[0];
@@ -160,24 +198,59 @@ export default function Home() {
         {/* Animated Backgrounds with Parallax */}
         <motion.div 
           style={{ y }}
-          className="absolute inset-0 w-full h-[120%] z-0 bg-zinc-950"
+          className="absolute inset-0 w-full h-[120%] z-0 bg-zinc-950 overflow-hidden will-change-transform"
         >
-          {heroSteps.map((step, idx) => (
-            <motion.img
-              key={step.id}
-              src={step.image}
-              alt=""
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ 
-                opacity: heroIndex === idx ? 0.6 : 0,
-                scale: heroIndex === idx ? 1 : 1.05
-              }}
-              transition={{ duration: 1.5, ease: "easeInOut" }}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          ))}
+          {heroSteps.map((step, idx) => {
+            if (step.isFullBackground) {
+              return (
+                <motion.img
+                  key={step.id}
+                  src={step.image}
+                  alt=""
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ 
+                    opacity: heroIndex === idx ? 0.6 : 0,
+                    scale: heroIndex === idx ? 1 : 1.05
+                  }}
+                  transition={{ duration: 1.5, ease: "easeInOut" }}
+                  className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                />
+              );
+            }
+            
+            return (
+              <div key={step.id} className="absolute inset-0 w-full h-full pointer-events-none">
+                {step.images.map((img, imgIdx) => (
+                  <motion.img
+                    key={`${step.id}-${imgIdx}`}
+                    src={img.url}
+                    alt=""
+                    initial={{ opacity: 0, scale: 0.8, y: 50, rotate: 0 }}
+                    animate={{ 
+                      opacity: heroIndex === idx ? 0.7 : 0,
+                      scale: heroIndex === idx ? 1 : 0.8,
+                      y: heroIndex === idx ? 0 : 50,
+                      rotate: heroIndex === idx ? img.rotate : 0
+                    }}
+                    transition={{ 
+                      duration: 1.2, 
+                      ease: "backOut", 
+                      delay: heroIndex === idx ? img.delay : 0 
+                    }}
+                    className="absolute rounded-xl shadow-xl border-2 border-white/10 object-cover will-change-transform pointer-events-none"
+                    style={{ 
+                      top: img.top, 
+                      left: img.left,
+                      width: "clamp(150px, 20vw, 300px)",
+                      height: "clamp(200px, 25vh, 400px)"
+                    }}
+                  />
+                ))}
+              </div>
+            );
+          })}
           
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-zinc-950/95 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-zinc-950/95 pointer-events-none" />
         </motion.div>
 
         {/* Hero Content */}
@@ -285,14 +358,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             
             {/* Playful Tactics Board Animation */}
-            <div className="relative aspect-square bg-[#105c38] rounded-3xl border-8 border-zinc-800 shadow-2xl overflow-hidden flex items-center justify-center p-8 transition-colors duration-500">
-              {/* Pitch Lines */}
-              <div className="absolute inset-4 border-2 border-white/30 rounded-lg"></div>
-              <div className="absolute top-4 bottom-4 left-1/2 w-0 border-l-2 border-white/30"></div>
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 border-2 border-white/30 rounded-full"></div>
-              {/* Penalty boxes */}
-              <div className="absolute top-4 left-1/2 -translate-x-1/2 w-32 h-16 border-2 border-t-0 border-white/30"></div>
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-32 h-16 border-2 border-b-0 border-white/30"></div>
+            <div className="relative aspect-[4/5] bg-[url('/tactics-pitch.png')] bg-cover bg-center bg-no-repeat rounded-3xl border-8 border-zinc-800 shadow-2xl overflow-hidden flex items-center justify-center p-8 transition-all duration-500">
               
               <div className="relative w-full h-full">
                 {/* Movement Direction Arrows */}
