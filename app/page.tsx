@@ -1,14 +1,14 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Search, MapPin, Calendar, Activity, Users, Star, ArrowRight, Shield, Swords, Target } from "lucide-react";
+import { Search, MapPin, Calendar, Activity, Users, Star, ArrowRight, Shield, Swords, Target, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 import Lenis from "lenis";
 
 const heroSteps = [
-  { 
-    id: "pass", 
+  {
+    id: "pass",
     images: [
       { url: "/pass/1.jpg", top: "5%", left: "5%", rotate: -12, delay: 0 },
       { url: "/pass/2.jpg", top: "15%", left: "75%", rotate: 8, delay: 0.1 },
@@ -16,10 +16,10 @@ const heroSteps = [
       { url: "/pass/4.jpg", top: "65%", left: "70%", rotate: -15, delay: 0.15 },
       { url: "/pass/5.jpg", top: "35%", left: "85%", rotate: 12, delay: 0.25 },
       { url: "/pass/6.jpg", top: "40%", left: "-5%", rotate: 6, delay: 0.05 }
-    ] 
+    ]
   },
-  { 
-    id: "score", 
+  {
+    id: "score",
     images: [
       { url: "/shoot/1.jpg", top: "10%", left: "70%", rotate: 10, delay: 0 },
       { url: "/shoot/2.jpg", top: "50%", left: "5%", rotate: -8, delay: 0.1 },
@@ -27,13 +27,13 @@ const heroSteps = [
       { url: "/shoot/4.jpg", top: "5%", left: "20%", rotate: 15, delay: 0.15 },
       { url: "/shoot/5.jpg", top: "80%", left: "25%", rotate: -12, delay: 0.25 },
       { url: "/shoot/6.jpg", top: "35%", left: "80%", rotate: 6, delay: 0.05 }
-    ] 
+    ]
   },
-  { 
-    id: "repeat", 
+  {
+    id: "repeat",
     isFullBackground: true,
     image: "/coverImage.png",
-    images: [] 
+    images: []
   }
 ];
 
@@ -48,25 +48,25 @@ const tacticsData = [
     border: "border-[#ccff00]/30",
     duration: 6,
     us: [
-      { label: "GK", top: [80,75,75,75,75,80], left: [50,40,40,40,40,50], movePath: "M 50 80 L 40 75" },
-      { label: "CB", top: [65,65,45,30,30,65], left: [50,50,70,60,60,50], movePath: "M 50 65 Q 75 55 60 30" },
-      { label: "LW", top: [50,50,45,45,45,50], left: [20,20,35,35,35,20], movePath: "M 20 50 L 35 45" },
-      { label: "RW", top: [50,50,60,60,60,50], left: [80,80,50,50,50,80], movePath: "M 80 50 L 50 60" },
-      { label: "ST", top: [25,25,25,25,25,25], left: [50,50,50,50,50,50] }
+      { label: "GK", top: [80, 75, 75, 75, 75, 80], left: [50, 40, 40, 40, 40, 50], movePath: "M 50 80 L 40 75" },
+      { label: "CB", top: [65, 65, 45, 30, 30, 65], left: [50, 50, 70, 60, 60, 50], movePath: "M 50 65 Q 75 55 60 30" },
+      { label: "LW", top: [50, 50, 45, 45, 45, 50], left: [20, 20, 35, 35, 35, 20], movePath: "M 20 50 L 35 45" },
+      { label: "RW", top: [50, 50, 60, 60, 60, 50], left: [80, 80, 50, 50, 50, 80], movePath: "M 80 50 L 50 60" },
+      { label: "ST", top: [25, 25, 25, 25, 25, 25], left: [50, 50, 50, 50, 50, 50] }
     ],
     them: [
-      { label: "GK", top: [5,5,5,5,5,5], left: [50,50,50,50,60,50] },
-      { label: "DF", top: [25,25,25,35,35,25], left: [70,70,60,70,70,70] },
-      { label: "DF", top: [25,35,35,25,25,25], left: [30,25,35,40,40,30] },
-      { label: "FW", top: [50,60,60,60,60,50], left: [65,60,60,60,60,65] },
-      { label: "FW", top: [50,60,60,60,60,50], left: [35,40,40,40,40,35] }
+      { label: "GK", top: [5, 5, 5, 5, 5, 5], left: [50, 50, 50, 50, 60, 50] },
+      { label: "DF", top: [25, 25, 25, 35, 35, 25], left: [70, 70, 60, 70, 70, 70] },
+      { label: "DF", top: [25, 35, 35, 25, 25, 25], left: [30, 25, 35, 40, 40, 30] },
+      { label: "FW", top: [50, 60, 60, 60, 60, 50], left: [65, 60, 60, 60, 60, 65] },
+      { label: "FW", top: [50, 60, 60, 60, 60, 50], left: [35, 40, 40, 40, 40, 35] }
     ],
     ballAnim: {
       left: ["50%", "20%", "70%", "50%", "55%", "50%"],
-      top:  ["80%", "50%", "45%", "25%", "5%",  "80%"],
-      bgX:  ["0px", "-60px", "40px", "0px", "10px", "0px"],
-      bgY:  ["0px", "-60px", "-70px", "-110px", "-150px", "0px"],
-      opacity:[1,    1,     1,     1,     0,     0]
+      top: ["80%", "50%", "45%", "25%", "5%", "80%"],
+      bgX: ["0px", "-60px", "40px", "0px", "10px", "0px"],
+      bgY: ["0px", "-60px", "-70px", "-110px", "-150px", "0px"],
+      opacity: [1, 1, 1, 1, 0, 0]
     }
   },
   {
@@ -94,10 +94,10 @@ const tacticsData = [
     ],
     ballAnim: {
       left: ["50%", "20%", "30%", "50%", "80%", "50%", "20%", "30%", "60%", "50%"],
-      top:  ["45%", "40%", "15%", "45%", "40%", "45%", "40%", "25%", "10%", "45%"],
-      bgX:  ["0px", "-60px", "-40px", "0px", "60px", "0px", "-60px", "-40px", "20px", "0px"],
-      bgY:  ["0px", "-10px", "-60px", "0px", "-10px", "0px", "-10px", "-40px", "-70px", "0px"],
-      opacity:[1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+      top: ["45%", "40%", "15%", "45%", "40%", "45%", "40%", "25%", "10%", "45%"],
+      bgX: ["0px", "-60px", "-40px", "0px", "60px", "0px", "-60px", "-40px", "20px", "0px"],
+      bgY: ["0px", "-10px", "-60px", "0px", "-10px", "0px", "-10px", "-40px", "-70px", "0px"],
+      opacity: [1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
     }
   },
   {
@@ -110,30 +110,32 @@ const tacticsData = [
     border: "border-pink-500/30",
     duration: 6,
     us: [
-      { label: "GK", top: [85,85,85,85,85,85], left: [50,50,50,50,50,50] },
-      { label: "P1", top: [55,55,55,55,55,55], left: [20,20,20,20,20,20] },
-      { label: "P2", top: [55,55,20,20,20,55], left: [40,40,40,40,40,40], movePath: "M 40 55 L 40 20" },
-      { label: "P3", top: [55,55,55,55,55,55], left: [60,60,40,40,40,60], movePath: "M 60 55 L 40 55" },
-      { label: "P4", top: [55,55,55,55,55,55], left: [80,80,80,60,60,80], movePath: "M 80 55 L 60 55" }
+      { label: "GK", top: [85, 85, 85, 85, 85, 85], left: [50, 50, 50, 50, 50, 50] },
+      { label: "P1", top: [55, 55, 55, 55, 55, 55], left: [20, 20, 20, 20, 20, 20] },
+      { label: "P2", top: [55, 55, 20, 20, 20, 55], left: [40, 40, 40, 40, 40, 40], movePath: "M 40 55 L 40 20" },
+      { label: "P3", top: [55, 55, 55, 55, 55, 55], left: [60, 60, 40, 40, 40, 60], movePath: "M 60 55 L 40 55" },
+      { label: "P4", top: [55, 55, 55, 55, 55, 55], left: [80, 80, 80, 60, 60, 80], movePath: "M 80 55 L 60 55" }
     ],
     them: [
-      { label: "GK", top: [5,5,5,5,5,5], left: [50,50,50,50,40,50] },
-      { label: "DF", top: [45,45,25,25,25,45], left: [40,40,40,40,40,40] },
-      { label: "DF", top: [45,45,45,45,45,45], left: [60,60,60,60,60,60] },
-      { label: "FW", top: [45,45,45,45,45,45], left: [20,20,20,20,20,20] },
-      { label: "FW", top: [45,45,45,45,45,45], left: [80,80,80,80,80,80] }
+      { label: "GK", top: [5, 5, 5, 5, 5, 5], left: [50, 50, 50, 50, 40, 50] },
+      { label: "DF", top: [45, 45, 25, 25, 25, 45], left: [40, 40, 40, 40, 40, 40] },
+      { label: "DF", top: [45, 45, 45, 45, 45, 45], left: [60, 60, 60, 60, 60, 60] },
+      { label: "FW", top: [45, 45, 45, 45, 45, 45], left: [20, 20, 20, 20, 20, 20] },
+      { label: "FW", top: [45, 45, 45, 45, 45, 45], left: [80, 80, 80, 80, 80, 80] }
     ],
     ballAnim: {
       left: ["40%", "60%", "80%", "40%", "45%", "40%"],
-      top:  ["55%", "55%", "55%", "20%", "5%",  "55%"],
-      bgX:  ["0px", "40px", "80px", "0px", "10px", "0px"],
-      bgY:  ["0px", "0px", "0px", "-70px", "-100px", "0px"],
-      opacity:[1,    1,     1,     1,     0,     0]
+      top: ["55%", "55%", "55%", "20%", "5%", "55%"],
+      bgX: ["0px", "40px", "80px", "0px", "10px", "0px"],
+      bgY: ["0px", "0px", "0px", "-70px", "-100px", "0px"],
+      opacity: [1, 1, 1, 1, 0, 0]
     }
   }
 ];
 
 export default function Home() {
+  const [selectedDate, setSelectedDate] = useState("");
+
   useEffect(() => {
     const lenis = new Lenis();
     function raf(time: number) {
@@ -149,7 +151,7 @@ export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeTacticId, setActiveTacticId] = useState("diamond");
   const activeTactic = tacticsData.find(t => t.id === activeTacticId) || tacticsData[0];
-  
+
   const [heroIndex, setHeroIndex] = useState(0);
 
   useEffect(() => {
@@ -175,7 +177,7 @@ export default function Home() {
 
   return (
     <div ref={containerRef} className="bg-zinc-950 text-white font-sans selection:bg-[#ccff00] selection:text-black">
-      
+
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 px-6 py-6 transition-all duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -185,7 +187,7 @@ export default function Home() {
             </div>
             <span className="text-xl font-bold tracking-tight">FootStall</span>
           </div>
-          
+
           <div className="hidden md:flex items-center gap-8 text-sm font-medium">
             <Link href="#features" className="hover:text-[#ccff00] transition-colors text-white/90">Features</Link>
             <Link href="#tactics" className="hover:text-[#ccff00] transition-colors text-white/90">Tactics</Link>
@@ -202,7 +204,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-screen w-full overflow-hidden flex flex-col justify-between pt-32 pb-10 px-6">
         {/* Animated Backgrounds with Parallax */}
-        <motion.div 
+        <motion.div
           style={{ y }}
           className="absolute inset-0 w-full h-[120%] z-0 bg-zinc-950 overflow-hidden will-change-transform"
         >
@@ -214,7 +216,7 @@ export default function Home() {
                   src={step.image}
                   alt=""
                   initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ 
+                  animate={{
                     opacity: heroIndex === idx ? 0.6 : 0,
                     scale: heroIndex === idx ? 1 : 1.05
                   }}
@@ -223,7 +225,7 @@ export default function Home() {
                 />
               );
             }
-            
+
             return (
               <div key={step.id} className="absolute inset-0 w-full h-full pointer-events-none">
                 {step.images.map((img, imgIdx) => (
@@ -232,20 +234,20 @@ export default function Home() {
                     src={img.url}
                     alt=""
                     initial={{ opacity: 0, scale: 0.8, y: 50, rotate: 0 }}
-                    animate={{ 
+                    animate={{
                       opacity: heroIndex === idx ? 0.7 : 0,
                       scale: heroIndex === idx ? 1 : 0.8,
                       y: heroIndex === idx ? 0 : 50,
                       rotate: heroIndex === idx ? img.rotate : 0
                     }}
-                    transition={{ 
-                      duration: 1.2, 
-                      ease: "backOut", 
-                      delay: heroIndex === idx ? img.delay : 0 
+                    transition={{
+                      duration: 1.2,
+                      ease: "backOut",
+                      delay: heroIndex === idx ? img.delay : 0
                     }}
                     className="absolute rounded-xl shadow-xl border-2 border-white/10 object-cover will-change-transform pointer-events-none"
-                    style={{ 
-                      top: img.top, 
+                    style={{
+                      top: img.top,
                       left: img.left,
                       width: "clamp(150px, 20vw, 300px)",
                       height: "clamp(200px, 25vh, 400px)"
@@ -255,7 +257,7 @@ export default function Home() {
               </div>
             );
           })}
-          
+
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-zinc-950/95 pointer-events-none" />
         </motion.div>
 
@@ -272,35 +274,35 @@ export default function Home() {
           </motion.div>
 
           <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter leading-[0.85] text-white drop-shadow-2xl flex flex-wrap justify-center gap-x-4">
-            <motion.span 
-              animate={{ 
-                opacity: heroIndex === 0 ? 1 : 0.3, 
-                color: heroIndex === 0 ? "#ccff00" : "#ffffff" 
+            <motion.span
+              animate={{
+                opacity: heroIndex === 0 ? 1 : 0.3,
+                color: heroIndex === 0 ? "#ccff00" : "#ffffff"
               }}
               transition={{ duration: 0.5 }}
               className="inline-block"
             >Pass.</motion.span>
-            
-            <motion.span 
-              animate={{ 
-                opacity: heroIndex === 1 ? 1 : 0.3, 
+
+            <motion.span
+              animate={{
+                opacity: heroIndex === 1 ? 1 : 0.3,
                 color: heroIndex === 1 ? "#ccff00" : "#ffffff"
               }}
               transition={{ duration: 0.5 }}
               className="inline-block"
             >Score.</motion.span>
-            
-            <motion.span 
-              animate={{ 
-                opacity: heroIndex === 2 ? 1 : 0.3, 
+
+            <motion.span
+              animate={{
+                opacity: heroIndex === 2 ? 1 : 0.3,
                 color: heroIndex === 2 ? "#ccff00" : "#ffffff"
               }}
               transition={{ duration: 0.5 }}
               className="inline-block basis-full mt-2"
             >Repeat.</motion.span>
           </h1>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -309,63 +311,63 @@ export default function Home() {
             Built for players who take the game seriously. Book top-tier turfs, find opponents, and track your stats all in one place.
           </motion.p>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
             className="mt-10 flex gap-4"
           >
-            <button className="bg-[#ccff00] text-black px-8 py-4 rounded-full font-bold uppercase tracking-wide hover:scale-105 transition-transform shadow-[0_0_20px_rgba(204,255,0,0.5)]">
+            <Link href="/pitches" className="bg-[#ccff00] text-black px-8 py-4 rounded-full font-bold uppercase tracking-wide hover:scale-105 transition-transform shadow-[0_0_20px_rgba(204,255,0,0.5)] inline-block">
               Find a Pitch
-            </button>
+            </Link>
             <button className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-full font-bold uppercase tracking-wide hover:bg-white/20 transition-all">
               Host a Game
             </button>
           </motion.div>
         </div>
-        
-      
+
+
       </section>
 
-        {/* Bottom Stats */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1 }}
-          className="z-20 border-t border-white/10 pt-6 mt-auto max-w-5xl mx-auto w-full grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
-        >
-          <div>
-            <div className="text-3xl md:text-4xl font-black text-[#ccff00]">12,500+</div>
-            <div className="text-sm font-medium text-white/50 uppercase tracking-widest mt-1">Players</div>
-          </div>
-          <div>
-            <div className="text-3xl md:text-4xl font-black text-[#ccff00]">150</div>
-            <div className="text-sm font-medium text-white/50 uppercase tracking-widest mt-1">Turfs</div>
-          </div>
-          <div>
-            <div className="text-3xl md:text-4xl font-black text-[#ccff00]">50+</div>
-            <div className="text-sm font-medium text-white/50 uppercase tracking-widest mt-1">Leagues</div>
-          </div>
-          <div>
-            <div className="text-3xl md:text-4xl font-black text-[#ccff00]">99%</div>
-            <div className="text-sm font-medium text-white/50 uppercase tracking-widest mt-1">Satisfaction</div>
-          </div>
-        </motion.div>
+      {/* Bottom Stats */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 1 }}
+        className="z-20 border-t border-white/10 pt-6 mt-auto max-w-5xl mx-auto w-full grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
+      >
+        <div>
+          <div className="text-3xl md:text-4xl font-black text-[#ccff00]">12,500+</div>
+          <div className="text-sm font-medium text-white/50 uppercase tracking-widest mt-1">Players</div>
+        </div>
+        <div>
+          <div className="text-3xl md:text-4xl font-black text-[#ccff00]">150</div>
+          <div className="text-sm font-medium text-white/50 uppercase tracking-widest mt-1">Turfs</div>
+        </div>
+        <div>
+          <div className="text-3xl md:text-4xl font-black text-[#ccff00]">50+</div>
+          <div className="text-sm font-medium text-white/50 uppercase tracking-widest mt-1">Leagues</div>
+        </div>
+        <div>
+          <div className="text-3xl md:text-4xl font-black text-[#ccff00]">99%</div>
+          <div className="text-sm font-medium text-white/50 uppercase tracking-widest mt-1">Satisfaction</div>
+        </div>
+      </motion.div>
 
       {/* Scrolling Tactics & Playful UI Section */}
       <section id="tactics" className="py-32 px-6 bg-zinc-950 relative overflow-hidden">
         <div className="max-w-7xl mx-auto relative z-10">
-          
+
           <div className="text-center mb-24">
             <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tight mb-4">Master The <span className="text-[#ccff00]">5v5</span></h2>
             <p className="text-white/60 text-lg max-w-2xl mx-auto">It's not just about booking a pitch, it's about owning it. Learn the tactical setups before you step on the field.</p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-20 items-center">
-            
+
             {/* Playful Tactics Board Animation */}
             <div className="relative aspect-[4/5] bg-[url('/tactics-pitch.png')] bg-cover bg-center bg-no-repeat rounded-3xl border-8 border-zinc-800 shadow-2xl overflow-hidden flex items-center justify-center p-8 transition-all duration-500">
-              
+
               <div className="relative w-full h-full">
                 {/* Movement Direction Arrows */}
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full pointer-events-none z-10">
@@ -374,15 +376,15 @@ export default function Home() {
                       <path d="M 0 0 L 3 1.5 L 0 3 z" fill="rgba(255,255,255,0.4)" />
                     </marker>
                   </defs>
-                  
+
                   {activeTactic.us.map((player) => (
                     player.movePath && (
-                      <path 
+                      <path
                         key={`path-${activeTactic.id}-${player.label}`}
                         d={player.movePath}
-                        stroke="rgba(255,255,255,0.4)" 
-                        strokeWidth="0.4" 
-                        fill="none" 
+                        stroke="rgba(255,255,255,0.4)"
+                        strokeWidth="0.4"
+                        fill="none"
                         strokeDasharray="1 1"
                         markerEnd="url(#arrowhead)"
                       />
@@ -392,16 +394,15 @@ export default function Home() {
 
                 {/* Our Team (Red) */}
                 {activeTactic.us.map((player, idx) => (
-                  <motion.div 
+                  <motion.div
                     key={`${activeTactic.id}-us-${player.label}`}
-                    animate={{ 
-                      top: player.top.map(t => `${t}%`), 
-                      left: player.left.map(l => `${l}%`) 
+                    animate={{
+                      top: player.top.map(t => `${t}%`),
+                      left: player.left.map(l => `${l}%`)
                     }}
                     transition={{ duration: activeTactic.duration, repeat: Infinity, ease: "easeInOut" }}
-                    className={`absolute w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white flex items-center justify-center font-bold shadow-lg text-xs z-20 ${
-                      player.label === 'GK' ? 'bg-yellow-500 text-black' : 'bg-red-500 text-white'
-                    }`}
+                    className={`absolute w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white flex items-center justify-center font-bold shadow-lg text-xs z-20 ${player.label === 'GK' ? 'bg-yellow-500 text-black' : 'bg-red-500 text-white'
+                      }`}
                   >
                     {player.label}
                   </motion.div>
@@ -409,26 +410,25 @@ export default function Home() {
 
                 {/* Opponent Team (Blue) */}
                 {activeTactic.them.map((player, idx) => (
-                  <motion.div 
+                  <motion.div
                     key={`${activeTactic.id}-them-${player.label}-${idx}`}
-                    animate={{ 
-                      top: player.top.map(t => `${t}%`), 
-                      left: player.left.map(l => `${l}%`) 
+                    animate={{
+                      top: player.top.map(t => `${t}%`),
+                      left: player.left.map(l => `${l}%`)
                     }}
                     transition={{ duration: activeTactic.duration, repeat: Infinity, ease: "easeInOut" }}
-                    className={`absolute w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white/50 flex items-center justify-center font-bold shadow-lg text-xs z-10 ${
-                      player.label === 'GK' ? 'bg-zinc-700 text-white' : 'bg-blue-600 text-white'
-                    }`}
+                    className={`absolute w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white/50 flex items-center justify-center font-bold shadow-lg text-xs z-10 ${player.label === 'GK' ? 'bg-zinc-700 text-white' : 'bg-blue-600 text-white'
+                      }`}
                   >
                     {player.label}
                   </motion.div>
                 ))}
 
                 {/* Animated Football (3D Illusion) */}
-                <motion.div 
+                <motion.div
                   key={activeTactic.id + "-ball-container"}
-                  animate={{ 
-                    top: activeTactic.ballAnim.top, 
+                  animate={{
+                    top: activeTactic.ballAnim.top,
                     left: activeTactic.ballAnim.left,
                     opacity: activeTactic.ballAnim.opacity
                   }}
@@ -443,12 +443,12 @@ export default function Home() {
                       backgroundPositionY: activeTactic.ballAnim.bgY,
                     }}
                     transition={{ duration: activeTactic.duration, repeat: Infinity, ease: "easeInOut" }}
-                    style={{ 
+                    style={{
                       backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='24' viewBox='0 0 28 49'%3E%3Cg fill='%231e293b'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5M14 0l14 8v16L14 32l-14-8V8l14-8z'/%3E%3C/g%3E%3C/svg%3E")`,
                       backgroundSize: '12px 20px'
                     }}
                   />
-                  
+
                   {/* Fixed 3D Shading Overlay */}
                   <div className="absolute inset-0 rounded-full pointer-events-none" style={{
                     background: 'radial-gradient(circle at 35% 35%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.1) 40%, rgba(0,0,0,0.6) 85%, rgba(0,0,0,0.9) 100%)',
@@ -463,17 +463,16 @@ export default function Home() {
               {tacticsData.map((tactic, idx) => {
                 const Icon = tactic.icon;
                 const isActive = activeTacticId === tactic.id;
-                
+
                 return (
-                  <motion.div 
+                  <motion.div
                     key={tactic.id}
                     whileInView={{ opacity: 1, x: 0 }}
                     initial={{ opacity: 0, x: 50 }}
                     transition={{ duration: 0.5, delay: idx * 0.2 }}
                     onClick={() => setActiveTacticId(tactic.id)}
-                    className={`cursor-pointer p-6 rounded-2xl transition-all border ${
-                      isActive ? 'bg-white/10 border-white/20 shadow-lg scale-[1.02]' : 'border-transparent hover:bg-white/5'
-                    }`}
+                    className={`cursor-pointer p-6 rounded-2xl transition-all border ${isActive ? 'bg-white/10 border-white/20 shadow-lg scale-[1.02]' : 'border-transparent hover:bg-white/5'
+                      }`}
                   >
                     <div className="flex items-center gap-4 mb-4">
                       <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-colors ${isActive ? tactic.bg + ' ' + tactic.border : 'bg-white/5 border-white/10'}`}>
@@ -498,22 +497,44 @@ export default function Home() {
       <section className="py-24 px-6 border-t border-white/10 bg-zinc-900">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl md:text-5xl font-black uppercase mb-10">Stop Reading. Start Playing.</h2>
-          
-          <div className="bg-zinc-800 p-4 rounded-full border border-white/10 flex flex-col md:flex-row gap-2 shadow-2xl relative">
-            <div className="flex-1 flex items-center gap-3 px-6 py-3 bg-zinc-900/50 rounded-full">
-              <MapPin className="text-[#ccff00] w-5 h-5" />
-              <input type="text" placeholder="Search by city or venue..." className="bg-transparent border-none outline-none w-full text-white placeholder:text-white/40 font-medium" />
+
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-2 rounded-3xl md:rounded-full flex flex-col md:flex-row gap-2 shadow-[0_20px_40px_rgba(0,0,0,0.5)] hover:border-white/20 transition-all">
+            <div className="flex-1 flex items-center gap-3 px-6 py-3 border-b md:border-b-0 md:border-r border-white/5 transition-colors focus-within:bg-white/5 rounded-t-3xl md:rounded-l-full md:rounded-tr-none">
+              <MapPin className="text-[#ccff00] w-5 h-5 shrink-0" />
+              <div className="flex flex-col items-start w-full text-left">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-white/50 mb-1">Location</span>
+                <input
+                  type="text"
+                  placeholder="Where do you want to play?"
+                  className="bg-transparent text-white placeholder:text-white/40 focus:outline-none w-full font-semibold text-base"
+                />
+              </div>
             </div>
-            
-            <div className="flex-1 flex items-center gap-3 px-6 py-3 bg-zinc-900/50 rounded-full">
-              <Calendar className="text-[#ccff00] w-5 h-5" />
-              <input type="text" placeholder="Date & Time" className="bg-transparent border-none outline-none w-full text-white placeholder:text-white/40 font-medium" />
+
+            <div className="flex-1 flex items-center gap-3 px-6 py-3 transition-colors focus-within:bg-white/5 relative group cursor-pointer">
+              <Calendar className="text-[#ccff00] w-5 h-5 shrink-0" />
+              <div className="flex flex-col items-start w-full text-left relative">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-white/50 mb-1">Date & Time</span>
+                <div className="flex items-center justify-between w-full">
+                  <span className={`font-semibold text-base ${selectedDate ? 'text-white' : 'text-white/40'}`}>
+                    {selectedDate ? new Date(selectedDate).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : "Select Date & Time"}
+                  </span>
+                  <ChevronDown className="w-4 h-4 text-white/50 group-hover:text-white/80 transition-colors" />
+                </div>
+                {/* Native OS Picker overlay */}
+                <input
+                  type="datetime-local"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+              </div>
             </div>
-            
-            <button className="bg-[#ccff00] hover:bg-white text-black font-bold uppercase tracking-wide px-10 py-4 rounded-full transition-colors flex items-center justify-center gap-2">
+
+            <Link href="/pitches" className="bg-[#ccff00] text-black px-10 py-4 md:py-0 md:h-[64px] rounded-2xl md:rounded-full font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_20px_rgba(204,255,0,0.3)] hover:shadow-[0_0_30px_rgba(204,255,0,0.5)] flex items-center gap-2 w-full md:w-auto justify-center shrink-0">
               <Search className="w-5 h-5" />
-              Search
-            </button>
+              <span>Search</span>
+            </Link>
           </div>
         </div>
       </section>
