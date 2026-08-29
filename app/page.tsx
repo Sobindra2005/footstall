@@ -3,7 +3,13 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Search, MapPin, Calendar, Activity, Users, Star, ArrowRight, Shield, Swords, Target } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+
+const heroSteps = [
+  { id: "pass", image: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1920&q=80" },
+  { id: "score", image: "https://images.unsplash.com/photo-1459865264687-595d652de67e?auto=format&fit=crop&w=1920&q=80" },
+  { id: "repeat", image: "https://images.unsplash.com/photo-1526232761682-d26e03ac148e?auto=format&fit=crop&w=1920&q=80" }
+];
 
 const tacticsData = [
   {
@@ -99,6 +105,22 @@ export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeTacticId, setActiveTacticId] = useState("diamond");
   const activeTactic = tacticsData.find(t => t.id === activeTacticId) || tacticsData[0];
+  
+  const [heroIndex, setHeroIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHeroIndex((prev) => {
+        if (prev >= 2) {
+          clearInterval(interval);
+          return 2;
+        }
+        return prev + 1;
+      });
+    }, 2500); // 2.5 seconds per step
+    return () => clearInterval(interval);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -135,18 +157,31 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="relative h-screen w-full overflow-hidden flex flex-col justify-between pt-32 pb-10 px-6">
-        {/* Background Image with Parallax */}
+        {/* Animated Backgrounds with Parallax */}
         <motion.div 
           style={{ y }}
-          className="absolute inset-0 w-full h-[120%] -z-10"
+          className="absolute inset-0 w-full h-[120%] z-0 bg-zinc-950"
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-zinc-950/90 z-10" />
-          {/* Top-down pitch background */}
-          <div className="absolute inset-0 bg-[url('/pitch-bg.png')] bg-cover bg-center bg-no-repeat opacity-80" />
+          {heroSteps.map((step, idx) => (
+            <motion.img
+              key={step.id}
+              src={step.image}
+              alt=""
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ 
+                opacity: heroIndex === idx ? 0.6 : 0,
+                scale: heroIndex === idx ? 1 : 1.05
+              }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          ))}
+          
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-zinc-950/95 pointer-events-none" />
         </motion.div>
 
         {/* Hero Content */}
-        <div className="flex-1 flex flex-col items-center justify-center text-center z-20 mt-10">
+        <div className="flex-1 flex flex-col items-center justify-center text-center relative z-20 mt-10">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -157,15 +192,34 @@ export default function Home() {
             14 Pitches Available Now
           </motion.div>
 
-          <motion.h1 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-6xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter leading-[0.85] text-white drop-shadow-2xl"
-          >
-            Pass. <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">Score.</span> <br />
-            <span className="text-[#ccff00]">Repeat.</span>
-          </motion.h1>
+          <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-black uppercase tracking-tighter leading-[0.85] text-white drop-shadow-2xl flex flex-wrap justify-center gap-x-4">
+            <motion.span 
+              animate={{ 
+                opacity: heroIndex === 0 ? 1 : 0.3, 
+                color: heroIndex === 0 ? "#ccff00" : "#ffffff" 
+              }}
+              transition={{ duration: 0.5 }}
+              className="inline-block"
+            >Pass.</motion.span>
+            
+            <motion.span 
+              animate={{ 
+                opacity: heroIndex === 1 ? 1 : 0.3, 
+                color: heroIndex === 1 ? "#ccff00" : "#ffffff"
+              }}
+              transition={{ duration: 0.5 }}
+              className="inline-block"
+            >Score.</motion.span>
+            
+            <motion.span 
+              animate={{ 
+                opacity: heroIndex === 2 ? 1 : 0.3, 
+                color: heroIndex === 2 ? "#ccff00" : "#ffffff"
+              }}
+              transition={{ duration: 0.5 }}
+              className="inline-block basis-full mt-2"
+            >Repeat.</motion.span>
+          </h1>
           
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
