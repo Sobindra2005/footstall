@@ -32,7 +32,7 @@ const heroSteps = [
   { 
     id: "repeat", 
     isFullBackground: true,
-    image: "https://images.unsplash.com/photo-1526232761682-d26e03ac148e?auto=format&fit=crop&w=1920&q=80",
+    image: "/coverImage.png",
     images: [] 
   }
 ];
@@ -64,6 +64,8 @@ const tacticsData = [
     ballAnim: {
       left: ["50%", "20%", "70%", "50%", "55%", "50%"],
       top:  ["80%", "50%", "45%", "25%", "5%",  "80%"],
+      bgX:  ["0px", "-60px", "40px", "0px", "10px", "0px"],
+      bgY:  ["0px", "-60px", "-70px", "-110px", "-150px", "0px"],
       opacity:[1,    1,     1,     1,     0,     0]
     }
   },
@@ -93,6 +95,8 @@ const tacticsData = [
     ballAnim: {
       left: ["50%", "20%", "30%", "50%", "80%", "50%", "20%", "30%", "60%", "50%"],
       top:  ["45%", "40%", "15%", "45%", "40%", "45%", "40%", "25%", "10%", "45%"],
+      bgX:  ["0px", "-60px", "-40px", "0px", "60px", "0px", "-60px", "-40px", "20px", "0px"],
+      bgY:  ["0px", "-10px", "-60px", "0px", "-10px", "0px", "-10px", "-40px", "-70px", "0px"],
       opacity:[1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
     }
   },
@@ -122,6 +126,8 @@ const tacticsData = [
     ballAnim: {
       left: ["40%", "60%", "80%", "40%", "45%", "40%"],
       top:  ["55%", "55%", "55%", "20%", "5%",  "55%"],
+      bgX:  ["0px", "40px", "80px", "0px", "10px", "0px"],
+      bgY:  ["0px", "0px", "0px", "-70px", "-100px", "0px"],
       opacity:[1,    1,     1,     1,     0,     0]
     }
   }
@@ -418,13 +424,37 @@ export default function Home() {
                   </motion.div>
                 ))}
 
-                {/* Animated Football */}
+                {/* Animated Football (3D Illusion) */}
                 <motion.div 
-                  key={activeTactic.id + "-ball"}
-                  animate={activeTactic.ballAnim}
+                  key={activeTactic.id + "-ball-container"}
+                  animate={{ 
+                    top: activeTactic.ballAnim.top, 
+                    left: activeTactic.ballAnim.left,
+                    opacity: activeTactic.ballAnim.opacity
+                  }}
                   transition={{ duration: activeTactic.duration, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-[0_0_15px_white] z-30"
-                />
+                  className="absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2 z-30 rounded-full shadow-[0_3px_8px_rgba(0,0,0,0.5)] overflow-hidden bg-[#e2e8f0]"
+                >
+                  {/* Scrolling Texture Illusion */}
+                  <motion.div
+                    className="w-full h-full opacity-80"
+                    animate={{
+                      backgroundPositionX: activeTactic.ballAnim.bgX,
+                      backgroundPositionY: activeTactic.ballAnim.bgY,
+                    }}
+                    transition={{ duration: activeTactic.duration, repeat: Infinity, ease: "easeInOut" }}
+                    style={{ 
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='24' viewBox='0 0 28 49'%3E%3Cg fill='%231e293b'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5M14 0l14 8v16L14 32l-14-8V8l14-8z'/%3E%3C/g%3E%3C/svg%3E")`,
+                      backgroundSize: '12px 20px'
+                    }}
+                  />
+                  
+                  {/* Fixed 3D Shading Overlay */}
+                  <div className="absolute inset-0 rounded-full pointer-events-none" style={{
+                    background: 'radial-gradient(circle at 35% 35%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.1) 40%, rgba(0,0,0,0.6) 85%, rgba(0,0,0,0.9) 100%)',
+                    boxShadow: 'inset -2px -2px 5px rgba(0,0,0,0.8), inset 2px 2px 4px rgba(255,255,255,0.9)'
+                  }} />
+                </motion.div>
               </div>
             </div>
 
