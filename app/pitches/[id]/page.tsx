@@ -28,6 +28,7 @@ export default function PitchDetailsPage() {
   const [activeImage, setActiveImage] = useState(0);
   const [selectedBsDate, setSelectedBsDate] = useState("");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   if (!pitch) {
     return (
@@ -86,7 +87,7 @@ export default function PitchDetailsPage() {
         </div>
 
         {/* Bento Dashboard Top Row */}
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 min-h-[550px]">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
           
           {/* 1. Image Gallery (Col Span 8) */}
           <div className="xl:col-span-8 bg-zinc-900 rounded-[2rem] border border-white/5 overflow-hidden relative flex flex-col group">
@@ -114,45 +115,52 @@ export default function PitchDetailsPage() {
           </div>
 
           {/* 2. Booking Widget (Col Span 4) */}
-          <div className="xl:col-span-4 bg-[#ccff00] rounded-[2rem] p-8 text-black flex flex-col justify-between relative overflow-hidden shadow-[0_20px_50px_rgba(204,255,0,0.15)]">
+          <div className="xl:col-span-4 bg-zinc-900 border border-[#ccff00]/20 rounded-[2rem] p-6 md:p-8 text-white flex flex-col justify-between relative overflow-hidden shadow-[0_20px_50px_rgba(204,255,0,0.05)]">
             <div>
-              <div className="text-[10px] uppercase font-bold tracking-[0.3em] text-black/50 mb-2">Book This Pitch</div>
+              <div className="text-[10px] uppercase font-bold tracking-[0.3em] text-white/50 mb-2">Book This Pitch</div>
               <div className="flex items-baseline gap-2 mb-8">
-                <span className="text-5xl md:text-6xl font-black tracking-tighter">NPR {pitch.pricePerHour}</span>
-                <span className="text-xs uppercase font-bold tracking-widest text-black/50">/ Hour</span>
+                <span className="text-4xl md:text-5xl font-black tracking-tighter text-[#ccff00]">NPR {pitch.pricePerHour}</span>
+                <span className="text-xs uppercase font-bold tracking-widest text-white/50">/ Hour</span>
               </div>
 
               <div className="space-y-4 relative z-10">
-                <div className="flex flex-col bg-white/40 p-4 rounded-2xl border border-black/5 relative">
-                  <div className="flex items-center gap-3 mb-4">
-                    <CalendarIcon className="w-5 h-5 shrink-0 text-black/70" />
-                    <span className="text-[10px] uppercase font-bold text-black/50 tracking-widest">Select Date (BS)</span>
+                <div className="flex flex-col bg-white/5 p-4 rounded-2xl border border-white/10 relative">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <CalendarIcon className="w-5 h-5 shrink-0 text-[#ccff00]" />
+                      <span className="text-[10px] uppercase font-bold text-white/50 tracking-widest">Select Date (BS)</span>
+                    </div>
+                    <button 
+                      onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+                      className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition-colors font-bold text-white flex items-center gap-1"
+                    >
+                      {selectedBsDate || "Choose Date"} <ChevronDown className={`w-3 h-3 transition-transform ${isCalendarOpen ? 'rotate-180' : ''}`} />
+                    </button>
                   </div>
-                  <div className="w-full overflow-hidden flex justify-center bg-white/80 rounded-xl p-2">
-                    {/* @ts-ignore - The nepali-datepicker types might not perfectly match */}
-                    <Calendar 
-                      onChange={({ bsDate }) => {
-                        setSelectedBsDate(bsDate);
-                        setSelectedTimeSlot(""); // reset time when date changes
-                      }} 
-                      theme="deepdark"
-                      language="en"
-                    />
-                  </div>
-                  {selectedBsDate && (
-                    <div className="mt-2 text-center text-xs font-bold text-black/70">
-                      Selected: {selectedBsDate}
+                  
+                  {isCalendarOpen && (
+                    <div className="w-full mt-2 overflow-hidden flex justify-center bg-zinc-800 rounded-xl p-2 border border-white/10 relative z-20 shadow-2xl">
+                      {/* @ts-ignore - The nepali-datepicker types might not perfectly match */}
+                      <Calendar 
+                        onChange={({ bsDate }) => {
+                          setSelectedBsDate(bsDate);
+                          setSelectedTimeSlot(""); // reset time when date changes
+                          setIsCalendarOpen(false);
+                        }} 
+                        theme="deepdark"
+                        language="en"
+                      />
                     </div>
                   )}
                 </div>
 
                 {selectedBsDate && (
-                  <div className="flex flex-col bg-white/40 p-4 rounded-2xl border border-black/5 relative">
+                  <div className="flex flex-col bg-white/5 p-4 rounded-2xl border border-white/10 relative">
                     <div className="flex items-center gap-3 mb-3">
-                      <Clock className="w-5 h-5 shrink-0 text-black/70" />
-                      <span className="text-[10px] uppercase font-bold text-black/50 tracking-widest">Select Time Slot</span>
+                      <Clock className="w-5 h-5 shrink-0 text-[#ccff00]" />
+                      <span className="text-[10px] uppercase font-bold text-white/50 tracking-widest">Select Time Slot</span>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 max-h-[200px] overflow-y-auto pr-1 hide-scrollbar">
+                    <div className="grid grid-cols-3 gap-2 max-h-[160px] overflow-y-auto pr-1 hide-scrollbar">
                       {timeSlots.map(slot => {
                         const isBooked = checkIsBooked(selectedBsDate, slot);
                         const isSelected = selectedTimeSlot === slot;
@@ -163,10 +171,10 @@ export default function PitchDetailsPage() {
                             onClick={() => setSelectedTimeSlot(slot)}
                             className={`py-2 px-1 text-xs font-bold rounded-lg border transition-all ${
                               isBooked 
-                                ? 'bg-black/5 text-black/30 border-black/5 cursor-not-allowed line-through' 
+                                ? 'bg-black/20 text-white/30 border-white/5 cursor-not-allowed line-through' 
                                 : isSelected 
-                                  ? 'bg-black text-[#ccff00] border-black scale-105' 
-                                  : 'bg-white text-black border-black/10 hover:bg-black/10 hover:border-black/20'
+                                  ? 'bg-[#ccff00] text-black border-[#ccff00] scale-105' 
+                                  : 'bg-white/5 text-white border-white/10 hover:bg-white/10 hover:border-white/20'
                             }`}
                           >
                             {slot}
@@ -175,43 +183,43 @@ export default function PitchDetailsPage() {
                       })}
                     </div>
                     {!selectedTimeSlot && (
-                      <div className="mt-3 text-center text-[10px] uppercase font-bold text-black/50">
+                      <div className="mt-3 text-center text-[10px] uppercase font-bold text-white/50">
                         Please select an available slot
                       </div>
                     )}
                   </div>
                 )}
                 
-                <div className="flex items-center justify-between bg-black/5 p-4 rounded-2xl border border-black/5">
+                <div className="flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/10">
                   <div className="flex flex-col">
-                    <span className="text-[10px] uppercase font-bold text-black/50 tracking-widest">Open Hours</span>
-                    <span className="font-black text-sm mt-0.5">{pitch.openHours}</span>
+                    <span className="text-[10px] uppercase font-bold text-white/50 tracking-widest">Open Hours</span>
+                    <span className="font-black text-sm mt-0.5 text-white">{pitch.openHours}</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="mt-8 relative z-10">
-              <div className="border-t border-black/10 pt-4 mb-6">
-                <div className="flex justify-between items-center mb-1 text-sm font-bold text-black/60">
+              <div className="border-t border-white/10 pt-4 mb-6">
+                <div className="flex justify-between items-center mb-1 text-sm font-bold text-white/60">
                   <span>Service Fee</span>
                   <span>NPR 50</span>
                 </div>
-                <div className="flex justify-between items-center text-lg font-black mt-2">
+                <div className="flex justify-between items-center text-lg font-black mt-2 text-white">
                   <span>Total</span>
-                  <span>NPR {pitch.pricePerHour + 50}</span>
+                  <span className="text-[#ccff00]">NPR {pitch.pricePerHour + 50}</span>
                 </div>
               </div>
               <button 
                 disabled={!selectedBsDate || !selectedTimeSlot}
-                className="w-full bg-black text-white font-black uppercase tracking-widest py-5 rounded-2xl hover:scale-[1.02] active:scale-95 transition-transform flex items-center justify-center gap-2 shadow-xl disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
+                className="w-full bg-[#ccff00] text-black font-black uppercase tracking-widest py-5 rounded-2xl hover:scale-[1.02] active:scale-95 transition-transform flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(204,255,0,0.2)] disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
               >
                 Continue to Payment
               </button>
             </div>
             
             {/* Background Graphic */}
-            <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-white/20 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-[#ccff00]/5 rounded-full blur-3xl pointer-events-none" />
           </div>
 
         </div>
@@ -220,7 +228,7 @@ export default function PitchDetailsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
           {/* 3. Pitch Description (Col Span 7) */}
-          <div className="lg:col-span-7 bg-zinc-900 rounded-[2rem] p-8 md:p-10 border border-white/5">
+          <div className="lg:col-span-7 bg-zinc-900 rounded-[2rem] p-6 md:p-8 border border-white/5">
             <h2 className="text-[10px] uppercase font-bold tracking-[0.3em] text-white/50 mb-6">About The Pitch</h2>
             <p className="text-xl md:text-2xl font-medium text-white/80 leading-relaxed tracking-tight">
               {pitch.description}
@@ -228,7 +236,7 @@ export default function PitchDetailsPage() {
           </div>
 
           {/* 4. Amenities (Col Span 5) */}
-          <div className="lg:col-span-5 bg-zinc-900 rounded-[2rem] p-8 md:p-10 border border-white/5">
+          <div className="lg:col-span-5 bg-zinc-900 rounded-[2rem] p-6 md:p-8 border border-white/5">
             <h2 className="text-[10px] uppercase font-bold tracking-[0.3em] text-white/50 mb-6">Amenities Included</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {pitch.amenities.map((amenity, idx) => (
