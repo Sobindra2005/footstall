@@ -5,6 +5,7 @@ import { Search, MapPin, Calendar, Activity, Users, Star, ArrowRight, Shield, Sw
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 import Lenis from "lenis";
+import { Header } from "@/components/Header";
 
 const heroSteps = [
   {
@@ -135,15 +136,6 @@ const tacticsData = [
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState("");
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     const lenis = new Lenis();
@@ -188,27 +180,15 @@ export default function Home() {
     <div ref={containerRef} className="bg-zinc-950 text-white font-sans selection:bg-[#ccff00] selection:text-black">
 
       {/* Navigation */}
-      <nav className={`fixed top-0 w-full z-50 px-6 py-4 transition-all duration-300 ${isScrolled ? 'bg-zinc-950/90 backdrop-blur-md border-b border-white/10 py-4 shadow-xl' : 'bg-transparent py-6'}`}>
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#ccff00] rounded-full flex items-center justify-center">
-              <span className="text-black font-black text-sm">FS</span>
-            </div>
-            <span className="text-xl font-bold tracking-tight">FootStall</span>
-          </div>
-
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-            <Link href="#features" className="hover:text-[#ccff00] transition-colors text-white/90">Features</Link>
-            <Link href="#tactics" className="hover:text-[#ccff00] transition-colors text-white/90">Tactics</Link>
-            <Link href="#about" className="hover:text-[#ccff00] transition-colors text-white/90">About</Link>
-            <Link href="#contact" className="hover:text-[#ccff00] transition-colors text-white/90">Contact</Link>
-          </div>
-
-          <button className="bg-[#ccff00] text-black font-semibold text-sm px-6 py-2.5 rounded-full hover:bg-white transition-colors shadow-[0_0_15px_rgba(204,255,0,0.4)]">
-            Book a Pitch
-          </button>
-        </div>
-      </nav>
+      <Header 
+        variant="full" 
+        links={[
+          { label: "Features", href: "#features" },
+          { label: "Tactics", href: "#tactics" },
+          { label: "About", href: "#about" },
+          { label: "Contact", href: "#contact" }
+        ]}
+      />
 
       {/* Hero Section */}
       <section className="relative h-screen w-full overflow-hidden flex flex-col justify-between pt-32 pb-10 px-6">

@@ -4,6 +4,7 @@ import { dummyPitches } from "@/data/pitches";
 import { useParams } from "next/navigation";
 import { MapPin, Star, Clock, CheckCircle2, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { Header } from "@/components/Header";
 import { useEffect, useState } from "react";
 import Calendar from '@sbmdkl/nepali-datepicker-reactjs';
 import '@sbmdkl/nepali-datepicker-reactjs/dist/index.css';
@@ -52,44 +53,32 @@ export default function PitchDetailsPage() {
     <div className="min-h-screen bg-zinc-950 text-white selection:bg-[#ccff00] selection:text-black">
       
       {/* Navigation (Bento Navbar) */}
-      <div className="sticky top-0 z-50 pt-4 px-4 md:px-6 lg:px-8 pb-2">
-        <nav className="max-w-[1600px] mx-auto bg-zinc-900/40 backdrop-blur-sm border border-white/10 rounded-full px-6 py-4 flex items-center justify-between shadow-2xl">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#ccff00] rounded-full flex items-center justify-center">
-              <span className="text-black font-black text-sm">FS</span>
-            </div>
-            <span className="text-xl font-bold tracking-tight text-white hidden sm:block">FootStall</span>
-          </Link>
-          <div className="hidden md:flex items-center gap-8 text-sm font-semibold tracking-wide text-white/70">
-            <Link href="/#tactics" className="hover:text-white transition-colors">Tactics</Link>
-            <Link href="/pitches" className="text-white transition-colors">Pitches</Link>
-            <Link href="#" className="hover:text-white transition-colors">About</Link>
-          </div>
-          <Link href="/pitches" className="bg-white/10 text-white font-bold text-xs uppercase tracking-widest px-6 py-3 rounded-full hover:bg-white/20 transition-colors border border-white/10">
-            Back to Directory
-          </Link>
-        </nav>
-      </div>
+      <Header 
+        variant="bento" 
+        sticky={true} 
+      />
 
       <main className="max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8 pt-2 flex flex-col gap-5">
         
-        {/* Header Row */}
-        <div className="mb-2 mt-4 px-2">
-          <div className="flex items-center gap-4 mb-4">
-            <span className="bg-white/10 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-white/10">
+        {/* Compact Header Row */}
+        <div className="mb-4 mt-2 px-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none mb-3">
+              {pitch.name}
+            </h1>
+            <div className="flex items-center gap-2 text-white/50 text-xs font-bold uppercase tracking-widest">
+              <MapPin className="w-3.5 h-3.5 text-[#ccff00]" />
+              {pitch.location.address}
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="bg-white/10 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/10">
               {pitch.turfType}
             </span>
             <div className="flex items-center gap-1.5 bg-[#ccff00]/10 text-[#ccff00] px-3 py-1.5 rounded-full border border-[#ccff00]/20">
               <Star className="w-3.5 h-3.5 fill-[#ccff00]" />
-              <span className="font-bold text-xs">{pitch.rating}</span>
+              <span className="font-bold text-[10px]">{pitch.rating}</span>
             </div>
-          </div>
-          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.85]">
-            {pitch.name}
-          </h1>
-          <div className="flex items-center gap-2 text-white/50 mt-4 text-sm font-bold uppercase tracking-widest">
-            <MapPin className="w-4 h-4 text-[#ccff00]" />
-            {pitch.location.address}
           </div>
         </div>
 

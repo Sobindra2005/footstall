@@ -1,45 +1,67 @@
 import { dummyPitches } from "@/data/pitches";
-import { MapPin, Star, ArrowRight } from "lucide-react";
+import { MapPin, Star, ArrowRight, Search, Calendar as CalendarIcon } from "lucide-react";
 import Link from "next/link";
+import { Header } from "@/components/Header";
 
 export default function PitchesPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white selection:bg-[#ccff00] selection:text-black">
       
       {/* Navigation (Bento Navbar) */}
-      <div className="p-4 md:p-6 lg:p-8 pb-0">
-        <nav className="max-w-[1600px] mx-auto bg-zinc-900 border border-white/5 rounded-full px-6 py-4 flex items-center justify-between shadow-2xl">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#ccff00] rounded-full flex items-center justify-center">
-              <span className="text-black font-black text-sm">FS</span>
-            </div>
-            <span className="text-xl font-bold tracking-tight text-white hidden sm:block">FootStall</span>
-          </Link>
-          <div className="hidden md:flex items-center gap-8 text-sm font-semibold tracking-wide text-white/70">
-            <Link href="/#tactics" className="hover:text-white transition-colors">Tactics</Link>
-            <Link href="/pitches" className="text-white transition-colors">Pitches</Link>
-            <Link href="#" className="hover:text-white transition-colors">About</Link>
-          </div>
+      <Header 
+        variant="bento" 
+        sticky={true} 
+        actionButton={
           <button className="bg-white text-black font-bold text-xs uppercase tracking-widest px-6 py-3 rounded-full hover:bg-zinc-200 transition-colors">
             Log In
           </button>
-        </nav>
-      </div>
+        }
+      />
 
       <main className="max-w-[1600px] mx-auto px-6 py-12 md:py-20 flex flex-col gap-12">
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/10 pb-12">
-          <div>
-            <div className="text-[10px] md:text-xs uppercase font-bold tracking-[0.3em] text-[#ccff00] mb-4">
-              Select A Venue
-            </div>
-            <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.85] text-white">
-              Available<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ccff00] to-green-400">Pitches</span>
+        <header className="flex flex-col gap-8 border-b border-white/10 pb-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none text-white">
+              Available <span className="text-[#ccff00]">Pitches</span>
             </h1>
+            <p className="text-white/50 text-sm font-medium max-w-md">
+              Find the perfect surface for your next match. Browse our curated selection of premium futsal and football pitches.
+            </p>
           </div>
-          <p className="text-white/50 text-sm md:text-base font-medium max-w-sm">
-            Browse our curated selection of premium futsal and football pitches. Find the perfect surface for your next match.
-          </p>
+          
+          {/* Search & Filter Bar */}
+          <div className="bg-zinc-900 border border-white/5 rounded-2xl p-2 md:p-3 flex flex-col md:flex-row gap-2 shadow-xl">
+            {/* Search by Name */}
+            <div className="flex-1 bg-white/5 rounded-xl flex items-center px-4 py-3 border border-transparent focus-within:border-white/20 transition-colors relative group">
+              <Search className="w-4 h-4 text-white/50 shrink-0" />
+              <input 
+                type="text" 
+                placeholder="Search by pitch name..." 
+                className="bg-transparent border-none outline-none text-sm text-white w-full placeholder:text-white/30 font-medium ml-3"
+              />
+            </div>
+            
+            {/* Filter by Date */}
+            <div className="flex-1 bg-white/5 rounded-xl flex items-center px-4 py-3 border border-transparent focus-within:border-white/20 transition-colors relative group">
+              <CalendarIcon className="w-4 h-4 text-white/50 shrink-0" />
+              <input 
+                type="date" 
+                min={new Date().toISOString().split('T')[0]}
+                className="bg-transparent border-none outline-none text-sm text-white w-full placeholder:text-white/30 font-medium ml-3 [color-scheme:dark]"
+              />
+            </div>
+
+            {/* Filter by Location */}
+            <div className="flex-1 bg-white/5 rounded-xl flex items-center px-4 py-3 border border-transparent focus-within:border-white/20 transition-colors relative group">
+              <MapPin className="w-4 h-4 text-white/50 shrink-0" />
+              <select className="bg-transparent border-none outline-none text-sm text-white w-full font-medium appearance-none ml-3">
+                <option value="" className="bg-zinc-900">Nearby Me (Any)</option>
+                <option value="kathmandu" className="bg-zinc-900">Kathmandu</option>
+                <option value="lalitpur" className="bg-zinc-900">Lalitpur</option>
+                <option value="bhaktapur" className="bg-zinc-900">Bhaktapur</option>
+              </select>
+            </div>
+          </div>
         </header>
 
         {/* Refined Minimalist Card Grid */}
