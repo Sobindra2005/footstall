@@ -5,10 +5,8 @@ import { useParams } from "next/navigation";
 import { MapPin, Star, Clock, CheckCircle2, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
+import { NepaliDatePicker } from "@/components/NepaliDatePicker";
 import { useEffect, useState } from "react";
-import Calendar from '@sbmdkl/nepali-datepicker-reactjs';
-import '@sbmdkl/nepali-datepicker-reactjs/dist/index.css';
-import NepaliDate from 'nepali-datetime';
 
 // Mock function to get available time slots (normally derived from openHours and backend)
 const timeSlots = [
@@ -30,13 +28,8 @@ export default function PitchDetailsPage() {
   const [activeImage, setActiveImage] = useState(0);
   const [selectedBsDate, setSelectedBsDate] = useState("");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [minDate, setMinDate] = useState("");
 
-  useEffect(() => {
-    // Prevent selecting past dates by setting minDate to today's Nepali Date
-    setMinDate(new NepaliDate().format('YYYY-MM-DD'));
-  }, []);
+
 
   if (!pitch) {
     return (
@@ -126,29 +119,16 @@ export default function PitchDetailsPage() {
                       <CalendarIcon className="w-5 h-5 shrink-0 text-[#ccff00]" />
                       <span className="text-[10px] uppercase font-bold text-white/50 tracking-widest">Select Date (BS)</span>
                     </div>
-                    <button 
-                      onClick={() => setIsCalendarOpen(!isCalendarOpen)}
-                      className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition-colors font-bold text-white flex items-center gap-1"
-                    >
-                      {selectedBsDate || "Choose Date"} <ChevronDown className={`w-3 h-3 transition-transform ${isCalendarOpen ? 'rotate-180' : ''}`} />
-                    </button>
+                    <NepaliDatePicker 
+                      value={selectedBsDate}
+                      onChange={(bsDate) => {
+                        setSelectedBsDate(bsDate);
+                        setSelectedTimeSlot(""); // reset time slot on date change
+                      }}
+                      placeholder="Choose Date"
+                      variant="button"
+                    />
                   </div>
-                  
-                  {isCalendarOpen && (
-                    <div className="absolute top-full left-0 w-full mt-2 overflow-hidden flex justify-center bg-zinc-800 rounded-xl p-2 border border-white/10 z-[100] shadow-2xl">
-                      {/* @ts-ignore - The nepali-datepicker types might not perfectly match */}
-                      <Calendar 
-                        onChange={({ bsDate }) => {
-                          setSelectedBsDate(bsDate);
-                          setSelectedTimeSlot(""); // reset time when date changes
-                          setIsCalendarOpen(false);
-                        }} 
-                        theme="deepdark"
-                        language="en"
-                        minDate={minDate}
-                      />
-                    </div>
-                  )}
                 </div>
 
                 {selectedBsDate && (

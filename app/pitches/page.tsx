@@ -1,9 +1,14 @@
+"use client";
+
 import { dummyPitches } from "@/data/pitches";
-import { MapPin, Star, ArrowRight, Search, Calendar as CalendarIcon } from "lucide-react";
+import { MapPin, Star, ArrowRight, Search } from "lucide-react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
+import { NepaliDatePicker } from "@/components/NepaliDatePicker";
+import { useState } from "react";
 
 export default function PitchesPage() {
+  const [selectedBsDate, setSelectedBsDate] = useState("");
   return (
     <div className="min-h-screen bg-zinc-950 text-white selection:bg-[#ccff00] selection:text-black">
       
@@ -42,14 +47,13 @@ export default function PitchesPage() {
             </div>
             
             {/* Filter by Date */}
-            <div className="flex-1 bg-white/5 rounded-xl flex items-center px-4 py-3 border border-transparent focus-within:border-white/20 transition-colors relative group">
-              <CalendarIcon className="w-4 h-4 text-white/50 shrink-0" />
-              <input 
-                type="date" 
-                min={new Date().toISOString().split('T')[0]}
-                className="bg-transparent border-none outline-none text-sm text-white w-full placeholder:text-white/30 font-medium ml-3 [color-scheme:dark]"
-              />
-            </div>
+            <NepaliDatePicker 
+              value={selectedBsDate}
+              onChange={setSelectedBsDate}
+              placeholder="Filter by Date (BS)"
+              variant="input"
+              className="flex-1"
+            />
 
             {/* Filter by Location */}
             <div className="flex-1 bg-white/5 rounded-xl flex items-center px-4 py-3 border border-transparent focus-within:border-white/20 transition-colors relative group">
