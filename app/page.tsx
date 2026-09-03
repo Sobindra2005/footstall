@@ -135,6 +135,15 @@ const tacticsData = [
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const lenis = new Lenis();
@@ -179,7 +188,7 @@ export default function Home() {
     <div ref={containerRef} className="bg-zinc-950 text-white font-sans selection:bg-[#ccff00] selection:text-black">
 
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 px-6 py-6 transition-all duration-300">
+      <nav className={`fixed top-0 w-full z-50 px-6 py-4 transition-all duration-300 ${isScrolled ? 'bg-zinc-950/90 backdrop-blur-md border-b border-white/10 py-4 shadow-xl' : 'bg-transparent py-6'}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-[#ccff00] rounded-full flex items-center justify-center">
@@ -525,6 +534,7 @@ export default function Home() {
                 <input
                   type="datetime-local"
                   value={selectedDate}
+                  min={new Date().toISOString().slice(0, 16)}
                   onChange={(e) => setSelectedDate(e.target.value)}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />

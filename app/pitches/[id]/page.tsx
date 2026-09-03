@@ -4,9 +4,10 @@ import { dummyPitches } from "@/data/pitches";
 import { useParams } from "next/navigation";
 import { MapPin, Star, Clock, CheckCircle2, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Calendar from '@sbmdkl/nepali-datepicker-reactjs';
 import '@sbmdkl/nepali-datepicker-reactjs/dist/index.css';
+import NepaliDate from 'nepali-datetime';
 
 // Mock function to get available time slots (normally derived from openHours and backend)
 const timeSlots = [
@@ -29,6 +30,12 @@ export default function PitchDetailsPage() {
   const [selectedBsDate, setSelectedBsDate] = useState("");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [minDate, setMinDate] = useState("");
+
+  useEffect(() => {
+    // Prevent selecting past dates by setting minDate to today's Nepali Date
+    setMinDate(new NepaliDate().format('YYYY-MM-DD'));
+  }, []);
 
   if (!pitch) {
     return (
@@ -45,8 +52,8 @@ export default function PitchDetailsPage() {
     <div className="min-h-screen bg-zinc-950 text-white selection:bg-[#ccff00] selection:text-black">
       
       {/* Navigation (Bento Navbar) */}
-      <div className="p-4 md:p-6 lg:p-8 pb-0">
-        <nav className="max-w-[1600px] mx-auto bg-zinc-900 border border-white/5 rounded-full px-6 py-4 flex items-center justify-between shadow-2xl">
+      <div className="sticky top-0 z-50 pt-4 px-4 md:px-6 lg:px-8 pb-2">
+        <nav className="max-w-[1600px] mx-auto bg-zinc-900/40 backdrop-blur-sm border border-white/10 rounded-full px-6 py-4 flex items-center justify-between shadow-2xl">
           <Link href="/" className="flex items-center gap-3">
             <div className="w-10 h-10 bg-[#ccff00] rounded-full flex items-center justify-center">
               <span className="text-black font-black text-sm">FS</span>
@@ -64,7 +71,7 @@ export default function PitchDetailsPage() {
         </nav>
       </div>
 
-      <main className="max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8 flex flex-col gap-6">
+      <main className="max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8 pt-2 flex flex-col gap-5">
         
         {/* Header Row */}
         <div className="mb-2 mt-4 px-2">
@@ -87,10 +94,10 @@ export default function PitchDetailsPage() {
         </div>
 
         {/* Bento Dashboard Top Row */}
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
           
           {/* 1. Image Gallery (Col Span 8) */}
-          <div className="xl:col-span-8 bg-zinc-900 rounded-[2rem] border border-white/5 overflow-hidden relative flex flex-col group">
+          <div className="xl:col-span-8 bg-zinc-900 rounded-[1.5rem] border border-white/5 overflow-hidden relative flex flex-col group min-h-[400px]">
             <div className="absolute inset-0 bg-zinc-800">
               <img 
                 src={pitch.images[activeImage]} 
@@ -101,12 +108,12 @@ export default function PitchDetailsPage() {
             </div>
             
             {/* Thumbnails overlaid at bottom */}
-            <div className="absolute bottom-6 left-6 right-6 flex gap-3 overflow-x-auto pb-2 snap-x hide-scrollbar">
+            <div className="absolute bottom-5 left-5 right-5 flex gap-3 overflow-x-auto pb-2 snap-x hide-scrollbar">
               {pitch.images.map((img, idx) => (
                 <button 
                   key={idx}
                   onClick={() => setActiveImage(idx)}
-                  className={`relative h-20 w-28 shrink-0 rounded-xl overflow-hidden border-2 transition-all snap-start shadow-xl backdrop-blur-md bg-black/50 ${activeImage === idx ? 'border-[#ccff00] opacity-100 scale-105' : 'border-white/10 opacity-50 hover:opacity-100'}`}
+                  className={`relative h-16 w-24 shrink-0 rounded-xl overflow-hidden border-2 transition-all snap-start shadow-xl backdrop-blur-md bg-black/50 ${activeImage === idx ? 'border-[#ccff00] opacity-100 scale-105' : 'border-white/10 opacity-50 hover:opacity-100'}`}
                 >
                   <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
                 </button>
@@ -115,7 +122,7 @@ export default function PitchDetailsPage() {
           </div>
 
           {/* 2. Booking Widget (Col Span 4) */}
-          <div className="xl:col-span-4 bg-zinc-900 border border-[#ccff00]/20 rounded-[2rem] p-6 md:p-8 text-white flex flex-col justify-between relative overflow-hidden shadow-[0_20px_50px_rgba(204,255,0,0.05)]">
+          <div className="xl:col-span-4 bg-zinc-900 border border-[#ccff00]/20 rounded-[1.5rem] p-5 md:p-6 text-white flex flex-col justify-between relative overflow-hidden shadow-[0_20px_50px_rgba(204,255,0,0.05)]">
             <div>
               <div className="text-[10px] uppercase font-bold tracking-[0.3em] text-white/50 mb-2">Book This Pitch</div>
               <div className="flex items-baseline gap-2 mb-8">
@@ -139,7 +146,7 @@ export default function PitchDetailsPage() {
                   </div>
                   
                   {isCalendarOpen && (
-                    <div className="w-full mt-2 overflow-hidden flex justify-center bg-zinc-800 rounded-xl p-2 border border-white/10 relative z-20 shadow-2xl">
+                    <div className="absolute top-full left-0 w-full mt-2 overflow-hidden flex justify-center bg-zinc-800 rounded-xl p-2 border border-white/10 z-[100] shadow-2xl">
                       {/* @ts-ignore - The nepali-datepicker types might not perfectly match */}
                       <Calendar 
                         onChange={({ bsDate }) => {
@@ -149,18 +156,19 @@ export default function PitchDetailsPage() {
                         }} 
                         theme="deepdark"
                         language="en"
+                        minDate={minDate}
                       />
                     </div>
                   )}
                 </div>
 
                 {selectedBsDate && (
-                  <div className="flex flex-col bg-white/5 p-4 rounded-2xl border border-white/10 relative">
+                  <div className="flex flex-col bg-white/5 p-4 rounded-2xl border border-white/10 relative z-0">
                     <div className="flex items-center gap-3 mb-3">
                       <Clock className="w-5 h-5 shrink-0 text-[#ccff00]" />
                       <span className="text-[10px] uppercase font-bold text-white/50 tracking-widest">Select Time Slot</span>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 max-h-[160px] overflow-y-auto pr-1 hide-scrollbar">
+                    <div className="grid grid-cols-3 gap-2 max-h-[140px] overflow-y-auto pr-1 hide-scrollbar">
                       {timeSlots.map(slot => {
                         const isBooked = checkIsBooked(selectedBsDate, slot);
                         const isSelected = selectedTimeSlot === slot;
@@ -225,19 +233,19 @@ export default function PitchDetailsPage() {
         </div>
 
         {/* Bento Dashboard Bottom Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
           
           {/* 3. Pitch Description (Col Span 7) */}
-          <div className="lg:col-span-7 bg-zinc-900 rounded-[2rem] p-6 md:p-8 border border-white/5">
-            <h2 className="text-[10px] uppercase font-bold tracking-[0.3em] text-white/50 mb-6">About The Pitch</h2>
-            <p className="text-xl md:text-2xl font-medium text-white/80 leading-relaxed tracking-tight">
+          <div className="lg:col-span-7 bg-zinc-900 rounded-[1.5rem] p-5 md:p-6 border border-white/5">
+            <h2 className="text-[10px] uppercase font-bold tracking-[0.3em] text-white/50 mb-4">About The Pitch</h2>
+            <p className="text-lg md:text-xl font-medium text-white/80 leading-relaxed tracking-tight">
               {pitch.description}
             </p>
           </div>
 
           {/* 4. Amenities (Col Span 5) */}
-          <div className="lg:col-span-5 bg-zinc-900 rounded-[2rem] p-6 md:p-8 border border-white/5">
-            <h2 className="text-[10px] uppercase font-bold tracking-[0.3em] text-white/50 mb-6">Amenities Included</h2>
+          <div className="lg:col-span-5 bg-zinc-900 rounded-[1.5rem] p-5 md:p-6 border border-white/5">
+            <h2 className="text-[10px] uppercase font-bold tracking-[0.3em] text-white/50 mb-4">Amenities Included</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {pitch.amenities.map((amenity, idx) => (
                 <div key={idx} className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/5">
