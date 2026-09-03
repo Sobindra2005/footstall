@@ -2,15 +2,32 @@
 
 import { dummyPitches } from "@/data/pitches";
 import { useParams } from "next/navigation";
-import { MapPin, Star, Clock, CheckCircle2, Calendar, ChevronDown } from "lucide-react";
+import { MapPin, Star, Clock, CheckCircle2, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import Calendar from '@sbmdkl/nepali-datepicker-reactjs';
+import '@sbmdkl/nepali-datepicker-reactjs/dist/index.css';
+
+// Mock function to get available time slots (normally derived from openHours and backend)
+const timeSlots = [
+  "06:00 AM", "07:00 AM", "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM",
+  "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM",
+  "06:00 PM", "07:00 PM", "08:00 PM", "09:00 PM", "10:00 PM"
+];
+
+// Mock deterministic booking checker
+const checkIsBooked = (date: string, slot: string) => {
+  if (!date) return false;
+  const hash = date.charCodeAt(date.length - 1) + slot.charCodeAt(0);
+  return hash % 3 === 0;
+};
 
 export default function PitchDetailsPage() {
   const params = useParams();
   const pitch = dummyPitches.find((p) => p.id === params.id);
   const [activeImage, setActiveImage] = useState(0);
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedBsDate, setSelectedBsDate] = useState("");
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
 
   if (!pitch) {
     return (
@@ -105,28 +122,67 @@ export default function PitchDetailsPage() {
                 <span className="text-xs uppercase font-bold tracking-widest text-black/50">/ Hour</span>
               </div>
 
-              <div className="space-y-3 relative z-10">
-                <div className="flex items-center gap-4 bg-white/40 p-4 rounded-2xl border border-black/5 relative cursor-pointer hover:bg-white/60 transition-colors">
-                  <Calendar className="w-5 h-5 shrink-0 text-black/70" />
-                  <div className="flex flex-col flex-1 relative">
-                    <span className="text-[10px] uppercase font-bold text-black/50 tracking-widest">Select Date & Time</span>
-                    <div className="flex items-center justify-between w-full mt-0.5">
-                      <span className={`font-black text-sm ${selectedDate ? 'text-black' : 'text-black/40'}`}>
-                        {selectedDate ? new Date(selectedDate).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : "Choose Slot"}
-                      </span>
-                      <ChevronDown className="w-4 h-4 text-black/40" />
-                    </div>
-                    <input 
-                      type="datetime-local"
-                      value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)} 
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              <div className="space-y-4 relative z-10">
+                <div className="flex flex-col bg-white/40 p-4 rounded-2xl border border-black/5 relative">
+                  <div className="flex items-center gap-3 mb-4">
+                    <CalendarIcon className="w-5 h-5 shrink-0 text-black/70" />
+                    <span className="text-[10px] uppercase font-bold text-black/50 tracking-widest">Select Date (BS)</span>
+                  </div>
+                  <div className="w-full overflow-hidden flex justify-center bg-white/80 rounded-xl p-2">
+                    {/* @ts-ignore - The nepali-datepicker types might not perfectly match */}
+                    <Calendar 
+                      onChange={({ bsDate }) => {
+                        setSelectedBsDate(bsDate);
+                        setSelectedTimeSlot(""); // reset time when date changes
+                      }} 
+                      theme="deepdark"
+                      language="en"
                     />
                   </div>
+                  {selectedBsDate && (
+                    <div className="mt-2 text-center text-xs font-bold text-black/70">
+                      Selected: {selectedBsDate}
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-center gap-4 bg-black/5 p-4 rounded-2xl border border-black/5">
-                  <Clock className="w-5 h-5 shrink-0 text-black/70" />
+                {selectedBsDate && (
+                  <div className="flex flex-col bg-white/40 p-4 rounded-2xl border border-black/5 relative">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Clock className="w-5 h-5 shrink-0 text-black/70" />
+                      <span className="text-[10px] uppercase font-bold text-black/50 tracking-widest">Select Time Slot</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 max-h-[200px] overflow-y-auto pr-1 hide-scrollbar">
+                      {timeSlots.map(slot => {
+                        const isBooked = checkIsBooked(selectedBsDate, slot);
+                        const isSelected = selectedTimeSlot === slot;
+                        return (
+                          <button
+                            key={slot}
+                            disabled={isBooked}
+                            onClick={() => setSelectedTimeSlot(slot)}
+                            className={`py-2 px-1 text-xs font-bold rounded-lg border transition-all ${
+                              isBooked 
+                                ? 'bg-black/5 text-black/30 border-black/5 cursor-not-allowed line-through' 
+                                : isSelected 
+                                  ? 'bg-black text-[#ccff00] border-black scale-105' 
+                                  : 'bg-white text-black border-black/10 hover:bg-black/10 hover:border-black/20'
+                            }`}
+                          >
+                            {slot}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {!selectedTimeSlot && (
+                      <div className="mt-3 text-center text-[10px] uppercase font-bold text-black/50">
+                        Please select an available slot
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                <div className="flex items-center justify-between bg-black/5 p-4 rounded-2xl border border-black/5">
                   <div className="flex flex-col">
                     <span className="text-[10px] uppercase font-bold text-black/50 tracking-widest">Open Hours</span>
                     <span className="font-black text-sm mt-0.5">{pitch.openHours}</span>
@@ -146,7 +202,10 @@ export default function PitchDetailsPage() {
                   <span>NPR {pitch.pricePerHour + 50}</span>
                 </div>
               </div>
-              <button className="w-full bg-black text-white font-black uppercase tracking-widest py-5 rounded-2xl hover:scale-[1.02] active:scale-95 transition-transform flex items-center justify-center gap-2 shadow-xl">
+              <button 
+                disabled={!selectedBsDate || !selectedTimeSlot}
+                className="w-full bg-black text-white font-black uppercase tracking-widest py-5 rounded-2xl hover:scale-[1.02] active:scale-95 transition-transform flex items-center justify-center gap-2 shadow-xl disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
+              >
                 Continue to Payment
               </button>
             </div>

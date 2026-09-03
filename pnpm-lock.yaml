@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@sbmdkl/nepali-datepicker-reactjs':
+        specifier: ^1.2.5
+        version: 1.2.5(react@19.2.8)
       framer-motion:
         specifier: ^13.1.1
         version: 13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -17,6 +20,9 @@ importers:
       lucide-react:
         specifier: ^1.34.0
         version: 1.34.0(react@19.2.8)
+      nepali-datetime:
+        specifier: ^2.0.0
+        version: 2.0.0
       next:
         specifier: 16.3.3
         version: 16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -462,6 +468,12 @@ packages:
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
+
+  '@sbmdkl/nepali-datepicker-reactjs@1.2.5':
+    resolution: {integrity: sha512-xhua5fa/FYbWURqp0JUZtmoxxXsKHzdjWqSDbdX7DYDFYKtZlVr7uSY7QDhLkg4ZUr3Vxz9VVDJfqZHkuScX+w==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '*'
 
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
@@ -1634,6 +1646,10 @@ packages:
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
+  nepali-datetime@2.0.0:
+    resolution: {integrity: sha512-y/twQ6XHEO3rgB74efOSyMSLO985lEsHs3dSJhRpUON6JGXb+6QjxWMSWKgd/+Fn/gqEYbK+sfyKx/MwgY5rNA==}
+    engines: {node: '>=22'}
+
   next@16.3.3:
     resolution: {integrity: sha512-tuRTx1nQ/yVw83cwJBo9F+njGUgMn3UHQycreWHB8XsStvvAh1AthbI8/4IpKnFaF58F+iSiHejYOlMQ/eq83g==}
     engines: {node: '>=20.9.0'}
@@ -2426,6 +2442,10 @@ snapshots:
   '@nolyfill/is-core-module@1.0.39': {}
 
   '@rtsao/scc@1.1.0': {}
+
+  '@sbmdkl/nepali-datepicker-reactjs@1.2.5(react@19.2.8)':
+    dependencies:
+      react: 19.2.8
 
   '@swc/helpers@0.5.23':
     dependencies:
@@ -3693,6 +3713,8 @@ snapshots:
   napi-postinstall@0.3.4: {}
 
   natural-compare@1.4.0: {}
+
+  nepali-datetime@2.0.0: {}
 
   next@16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
     dependencies:
