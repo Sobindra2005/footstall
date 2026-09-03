@@ -70,7 +70,7 @@ export function Header({ variant = "bento", sticky = false, links, actionButton 
 
   // Bento Variant
   return (
-    <div className={`${sticky ? 'sticky top-0 z-50' : ''} pt-4 md:pt-6 px-4 md:px-6 lg:px-8 pb-2 transition-colors duration-300 ${sticky && isScrolled ? 'bg-zinc-950/80 backdrop-blur-md' : 'bg-transparent'}`}>
+    <div className={`${sticky ? 'sticky top-0 z-50' : ''} pt-4 md:pt-6 px-4 md:px-6 lg:px-8 pb-2 transition-colors duration-300 bg-transparent`}>
       <nav className={`max-w-[1600px] mx-auto border rounded-full px-6 py-4 flex items-center justify-between shadow-2xl transition-colors duration-300 ${sticky && isScrolled ? 'bg-zinc-900/40 backdrop-blur-sm border-white/10' : 'bg-zinc-900 border-white/5'}`}>
         <Link href="/" className="flex items-center gap-3">
           <div className="w-10 h-10 bg-[#ccff00] rounded-full flex items-center justify-center">
