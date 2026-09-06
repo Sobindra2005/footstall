@@ -1,6 +1,7 @@
 "use client";
 
-import { dummyPitches } from "@/data/pitches";
+import { pitchesService } from "@/services/pitches.service";
+import { Pitch } from "@/types/pitch";
 import { useParams } from "next/navigation";
 import { MapPin, Star, Clock, CheckCircle2, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import Link from "next/link";
@@ -24,12 +25,35 @@ const checkIsBooked = (date: string, slot: string) => {
 
 export default function PitchDetailsPage() {
   const params = useParams();
-  const pitch = dummyPitches.find((p) => p.id === params.id);
+  const [pitch, setPitch] = useState<Pitch | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [selectedBsDate, setSelectedBsDate] = useState("");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
 
+  useEffect(() => {
+    const fetchPitch = async () => {
+      try {
+        const data = await pitchesService.getById(params.id as string);
+        setPitch(data);
+      } catch (error) {
+        console.error("Failed to fetch pitch details:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (params.id) {
+      fetchPitch();
+    }
+  }, [params.id]);
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-white">
+        <div className="animate-pulse text-[#ccff00] font-bold tracking-widest uppercase mb-4">Loading pitch...</div>
+      </div>
+    );
+  }
 
   if (!pitch) {
     return (

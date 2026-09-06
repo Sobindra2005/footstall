@@ -1,6 +1,7 @@
 "use client";
 
-import { dummyPitches } from "@/data/pitches";
+import { pitchesService } from "@/services/pitches.service";
+import { Pitch } from "@/types/pitch";
 import { MapPin, Star, ArrowRight, Search } from "lucide-react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
@@ -11,6 +12,24 @@ import { useState } from "react";
 export default function PitchesPage() {
   const [selectedBsDate, setSelectedBsDate] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
+  const [pitches, setPitches] = useState<Pitch[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPitches = async () => {
+      setIsLoading(true);
+      try {
+        const data = await pitchesService.getAll(selectedLocation);
+        setPitches(data);
+      } catch (error) {
+        console.error("Failed to fetch pitches:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchPitches();
+  }, [selectedLocation]);
+
   return (
     <div className="min-h-screen bg-zinc-950 text-white selection:bg-[#ccff00] selection:text-black">
       
@@ -74,9 +93,14 @@ export default function PitchesPage() {
         </header>
 
         {/* Refined Minimalist Card Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {dummyPitches.map((pitch) => (
-            <Link href={`/pitches/${pitch.id}`} key={pitch.id} className="group block">
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20 text-[#ccff00]">
+            <div className="animate-pulse font-bold tracking-widest uppercase">Loading pitches...</div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {pitches.map((pitch) => (
+              <Link href={`/pitches/${pitch.id}`} key={pitch.id} className="group block">
               <div className="bg-zinc-900 border border-white/5 rounded-[2rem] overflow-hidden hover:border-white/20 transition-all hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] flex flex-col h-full">
                 
                 {/* Image Section (Sleek Aspect Ratio) */}
@@ -129,6 +153,7 @@ export default function PitchesPage() {
             </Link>
           ))}
         </div>
+        )}
       </main>
 
       <footer className="max-w-[1600px] mx-auto mt-12 mb-8 flex flex-col sm:flex-row justify-between items-center text-[10px] uppercase font-bold tracking-[0.3em] text-white/30 px-6">
