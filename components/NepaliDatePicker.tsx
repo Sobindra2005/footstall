@@ -144,6 +144,32 @@ export function NepaliDatePicker({
     }
   };
 
+  const isPast = (d: any) => {
+    try {
+      const today = new NepaliDate();
+      if (d.getYear() < today.getYear()) return true;
+      if (d.getYear() === today.getYear()) {
+        if (d.getMonth() < today.getMonth()) return true;
+        if (d.getMonth() === today.getMonth() && d.getDate() < today.getDate()) return true;
+      }
+      return false;
+    } catch(e) {
+      return false;
+    }
+  };
+
+  const isPrevMonthDisabled = () => {
+    if (!currentMonth) return false;
+    try {
+      const today = new NepaliDate();
+      if (currentMonth.getYear() < today.getYear()) return true;
+      if (currentMonth.getYear() === today.getYear() && currentMonth.getMonth() <= today.getMonth()) return true;
+      return false;
+    } catch(e) {
+      return false;
+    }
+  };
+
   const isSelected = (d: any) => {
     if (!value) return false;
     try {
@@ -203,7 +229,8 @@ export function NepaliDatePicker({
             <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
               <button 
                 onClick={handlePrevMonth} 
-                className="w-8 h-8 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full transition-all hover:scale-110 active:scale-95 text-white/70 hover:text-white relative z-50"
+                disabled={isPrevMonthDisabled()}
+                className={`w-8 h-8 flex items-center justify-center rounded-full transition-all relative z-50 ${isPrevMonthDisabled() ? 'opacity-30 cursor-not-allowed text-white/50' : 'bg-white/5 hover:bg-white/10 hover:scale-110 active:scale-95 text-white/70 hover:text-white'}`}
               >
                 <ChevronLeft className="w-4 h-4 pointer-events-none" />
               </button>
@@ -229,30 +256,36 @@ export function NepaliDatePicker({
             
             {/* Calendar Grid */}
             <div className="grid grid-cols-7 gap-2">
-              {generateDays().map((day, idx) => (
-                <div key={idx} className="aspect-square flex items-center justify-center relative group">
-                  {day ? (
-                    <button
-                      onClick={(e) => handleSelectDate(day, e)}
-                      className={`w-full h-full rounded-full flex items-center justify-center text-sm font-bold transition-all relative z-50 ${
-                        isSelected(day)
-                          ? "bg-[#ccff00] text-black shadow-[0_0_15px_rgba(204,255,0,0.4)] scale-110"
-                          : isToday(day)
-                            ? "bg-white/10 text-white border border-white/20 hover:bg-white/20"
-                            : "text-white/80 hover:bg-white/10 hover:text-white hover:scale-110"
-                      }`}
-                    >
-                      <span className="pointer-events-none">{day.getDate()}</span>
-                    </button>
-                  ) : (
-                    <div className="w-full h-full pointer-events-none" />
-                  )}
-                  {/* Subtle hover backdrop for empty space around circle */}
-                  {day && !isSelected(day) && (
-                    <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 rounded-full z-0 scale-125 transition-colors pointer-events-none" />
-                  )}
-                </div>
-              ))}
+              {generateDays().map((day, idx) => {
+                const past = day ? isPast(day) : false;
+                return (
+                  <div key={idx} className="aspect-square flex items-center justify-center relative group">
+                    {day ? (
+                      <button
+                        disabled={past}
+                        onClick={(e) => handleSelectDate(day, e)}
+                        className={`w-full h-full rounded-full flex items-center justify-center text-sm font-bold transition-all relative z-50 ${
+                          past
+                            ? "text-white/20 cursor-not-allowed bg-transparent"
+                            : isSelected(day)
+                              ? "bg-[#ccff00] text-black shadow-[0_0_15px_rgba(204,255,0,0.4)] scale-110"
+                              : isToday(day)
+                                ? "bg-white/10 text-white border border-white/20 hover:bg-white/20"
+                                : "text-white/80 hover:bg-white/10 hover:text-white hover:scale-110"
+                        }`}
+                      >
+                        <span className="pointer-events-none">{day.getDate()}</span>
+                      </button>
+                    ) : (
+                      <div className="w-full h-full pointer-events-none" />
+                    )}
+                    {/* Subtle hover backdrop for empty space around circle */}
+                    {day && !isSelected(day) && !past && (
+                      <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 rounded-full z-0 scale-125 transition-colors pointer-events-none" />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </motion.div>
         )}
