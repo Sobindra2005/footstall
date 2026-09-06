@@ -112,8 +112,8 @@ export default function PitchDetailsPage() {
                 <span className="text-xs uppercase font-bold tracking-widest text-white/50">/ Hour</span>
               </div>
 
-              <div className="space-y-4 relative z-10">
-                <div className="flex flex-col bg-white/5 p-4 rounded-2xl border border-white/10 relative">
+              <div className="space-y-4 relative z-50">
+                <div className="flex flex-col bg-white/5 p-4 rounded-2xl border border-white/10 relative z-50">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <CalendarIcon className="w-5 h-5 shrink-0 text-[#ccff00]" />

@@ -490,7 +490,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl md:text-5xl font-black uppercase mb-10">Stop Reading. Start Playing.</h2>
 
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-2 rounded-3xl md:rounded-full flex flex-col md:flex-row gap-2 shadow-[0_20px_40px_rgba(0,0,0,0.5)] hover:border-white/20 transition-all">
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-2 rounded-3xl md:rounded-full flex flex-col md:flex-row gap-2 shadow-[0_20px_40px_rgba(0,0,0,0.5)] hover:border-white/20 transition-all relative z-50">
             <div className="flex-1 flex items-center gap-3 px-6 py-3 border-b md:border-b-0 md:border-r border-white/5 transition-colors focus-within:bg-white/5 rounded-t-3xl md:rounded-l-full md:rounded-tr-none">
               <MapPin className="text-[#ccff00] w-5 h-5 shrink-0" />
               <div className="flex flex-col items-start w-full text-left">
