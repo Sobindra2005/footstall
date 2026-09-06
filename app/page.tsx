@@ -7,7 +7,7 @@ import { useRef, useState, useEffect } from "react";
 import Lenis from "lenis";
 import { Header } from "@/components/Header";
 import { CustomSelect } from "@/components/CustomSelect";
-import { CustomDatePicker } from "@/components/CustomDatePicker";
+import { NepaliDatePicker } from "@/components/NepaliDatePicker";
 
 const heroSteps = [
   {
@@ -509,11 +509,11 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex-1 flex items-center gap-3 px-6 py-3 transition-colors focus-within:bg-white/5 relative group cursor-pointer md:rounded-r-full">
+            <div className="flex-1 flex items-center gap-3 px-6 py-3 transition-colors focus-within:bg-white/5 relative z-50 group cursor-pointer md:rounded-r-full">
               <Calendar className="text-[#ccff00] w-5 h-5 shrink-0" />
-              <div className="flex flex-col items-start w-full text-left relative">
+              <div className="flex flex-col items-start w-full text-left relative z-50">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-white/50 mb-1">Date</span>
-                <CustomDatePicker 
+                <NepaliDatePicker 
                   value={selectedDate} 
                   onChange={setSelectedDate} 
                   variant="unstyled"

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { MapPin, Star, Clock, CheckCircle2, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
-import { CustomDatePicker } from "@/components/CustomDatePicker";
+import { NepaliDatePicker } from "@/components/NepaliDatePicker";
 import { useEffect, useState } from "react";
 
 // Mock function to get available time slots (normally derived from openHours and backend)
@@ -117,9 +117,9 @@ export default function PitchDetailsPage() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <CalendarIcon className="w-5 h-5 shrink-0 text-[#ccff00]" />
-                      <span className="text-[10px] uppercase font-bold text-white/50 tracking-widest">Select Date</span>
+                      <span className="text-[10px] uppercase font-bold text-white/50 tracking-widest">Select Date (BS)</span>
                     </div>
-                    <CustomDatePicker 
+                    <NepaliDatePicker 
                       value={selectedBsDate}
                       onChange={(bsDate) => {
                         setSelectedBsDate(bsDate);

@@ -4,7 +4,7 @@ import { dummyPitches } from "@/data/pitches";
 import { MapPin, Star, ArrowRight, Search } from "lucide-react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
-import { CustomDatePicker } from "@/components/CustomDatePicker";
+import { NepaliDatePicker } from "@/components/NepaliDatePicker";
 import { CustomSelect } from "@/components/CustomSelect";
 import { useState } from "react";
 
@@ -49,8 +49,8 @@ export default function PitchesPage() {
             </div>
             
             {/* Filter by Date */}
-            <div className="flex-1 bg-white/5 rounded-xl flex items-center border border-transparent focus-within:border-white/20 transition-colors relative">
-              <CustomDatePicker 
+            <div className="flex-1 bg-white/5 rounded-xl flex items-center border border-transparent focus-within:border-white/20 transition-colors relative z-50">
+              <NepaliDatePicker 
                 value={selectedBsDate}
                 onChange={setSelectedBsDate}
                 placeholder="Filter by Date"
