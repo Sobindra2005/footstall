@@ -49,19 +49,51 @@ export default function PitchDetailsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-white">
-        <div className="animate-pulse text-[#ccff00] font-bold tracking-widest uppercase mb-4">Loading pitch...</div>
+      <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
+        <Header variant="bento" sticky={true} />
+        <main className="max-w-[1600px] w-full mx-auto p-4 md:p-6 lg:p-8 pt-2 flex flex-col gap-5 flex-1">
+          {/* Header Skeleton */}
+          <div className="mb-4 mt-2 px-2 flex flex-col md:flex-row md:items-end justify-between gap-4 animate-pulse">
+            <div>
+              <div className="h-12 w-64 bg-zinc-900 rounded-lg mb-3" />
+              <div className="h-4 w-48 bg-zinc-900 rounded-full" />
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-24 bg-zinc-900 rounded-full" />
+              <div className="h-8 w-16 bg-zinc-900 rounded-full" />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 animate-pulse">
+            <div className="xl:col-span-8 bg-zinc-900 rounded-[1.5rem] border border-white/5 min-h-[400px]" />
+            <div className="xl:col-span-4 bg-zinc-900 rounded-[1.5rem] border border-white/5 min-h-[400px]" />
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 animate-pulse">
+            <div className="lg:col-span-7 bg-zinc-900 rounded-[1.5rem] h-48 border border-white/5" />
+            <div className="lg:col-span-5 bg-zinc-900 rounded-[1.5rem] h-48 border border-white/5" />
+          </div>
+        </main>
       </div>
     );
   }
 
   if (!pitch) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-white">
-        <h1 className="text-4xl font-black mb-4">Pitch Not Found</h1>
-        <Link href="/pitches" className="text-[#ccff00] hover:underline">
-          Return to Pitches
-        </Link>
+      <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
+        <Header variant="bento" sticky={true} />
+        <div className="flex flex-col flex-1 items-center justify-center p-6 text-center">
+          <div className="bg-zinc-900/50 p-12 rounded-[2rem] border border-white/5 max-w-lg w-full flex flex-col items-center shadow-xl">
+            <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            </div>
+            <h1 className="text-3xl font-black uppercase tracking-tight mb-3">Pitch Not Found</h1>
+            <p className="text-white/50 mb-8">The pitch you're looking for doesn't exist or has been removed.</p>
+            <Link href="/pitches" className="bg-[#ccff00] text-black px-8 py-3 rounded-full font-bold uppercase tracking-widest hover:scale-105 active:scale-95 transition-all w-full text-center">
+              Browse Pitches
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
