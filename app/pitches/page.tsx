@@ -18,11 +18,6 @@ export default function PitchesPage() {
       <Header 
         variant="bento" 
         sticky={true} 
-        actionButton={
-          <button className="bg-white text-black font-bold text-xs uppercase tracking-widest px-6 py-3 rounded-full hover:bg-zinc-200 transition-colors">
-            Log In
-          </button>
-        }
       />
 
       <main className="max-w-[1600px] mx-auto px-6 py-12 md:py-20 flex flex-col gap-12">

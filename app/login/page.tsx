@@ -72,7 +72,7 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           {/* Pinterest-style Clean Card */}
           <div className="bg-zinc-900 rounded-[2.5rem] p-8 md:p-10 shadow-2xl relative overflow-hidden">
-            
+
             <div className="text-center mb-8">
               <div className="mx-auto w-12 h-12 bg-[#ccff00] rounded-full flex items-center justify-center mb-5 shadow-[0_0_20px_rgba(204,255,0,0.3)]">
                 <span className="text-black font-black text-xl">FS</span>
@@ -92,17 +92,15 @@ export default function LoginPage() {
                 <label className="block text-xs font-bold uppercase tracking-wider text-white/50 mb-2 ml-1">
                   Email
                 </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="name@example.com"
-                  className={`w-full bg-zinc-900 hover:bg-zinc-800/80 border-2 rounded-2xl px-4 py-4 text-white placeholder:text-zinc-500 focus:outline-none transition-all font-medium text-base shadow-sm ${
-                    fieldErrors.email 
-                      ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/50" 
-                      : "border-white/20 focus:border-[#ccff00] focus:ring-2 focus:ring-[#ccff00]/50"
-                  }`}
-                />
+                <div className={`w-full bg-white/5 rounded-xl flex items-center px-4 py-3 border transition-colors relative group ${fieldErrors.email ? "border-red-500" : "border-transparent focus-within:border-white/20"}`}>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="name@example.com"
+                    className="bg-transparent border-none outline-none text-sm text-white w-full placeholder:text-white/30 font-medium"
+                  />
+                </div>
                 {fieldErrors.email && (
                   <p className="text-red-400 text-xs mt-2 ml-1 font-medium">{fieldErrors.email[0]}</p>
                 )}
@@ -112,24 +110,20 @@ export default function LoginPage() {
                 <label className="block text-xs font-bold uppercase tracking-wider text-white/50 mb-2 ml-1">
                   Password
                 </label>
-                <div className="relative">
+                <div className={`w-full bg-white/5 rounded-xl flex items-center px-4 py-3 border transition-colors relative group ${fieldErrors.password ? "border-red-500" : "border-transparent focus-within:border-white/20"}`}>
                   <input
                     type={showPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     placeholder="••••••••"
-                    className={`w-full bg-zinc-900 hover:bg-zinc-800/80 border-2 rounded-2xl px-4 py-4 pr-12 text-white placeholder:text-zinc-500 focus:outline-none transition-all font-medium text-base shadow-sm ${
-                      fieldErrors.password 
-                        ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/50" 
-                        : "border-white/20 focus:border-[#ccff00] focus:ring-2 focus:ring-[#ccff00]/50"
-                    }`}
+                    className="bg-transparent border-none outline-none text-sm text-white w-full placeholder:text-white/30 font-medium pr-10"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors flex items-center justify-center"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors flex items-center justify-center"
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
                 {fieldErrors.password && (

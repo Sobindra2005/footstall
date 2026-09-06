@@ -11,13 +11,13 @@ export interface HeaderProps {
    * 'bento' is the floating pill-shaped header used on internal pages.
    */
   variant?: "full" | "bento";
-  
+
   /** Whether the header should stick to the top of the screen */
   sticky?: boolean;
-  
+
   /** Custom links to display in the center */
   links?: { label: string; href: string }[];
-  
+
   /** A custom React node (like a button or link) to display on the far right */
   actionButton?: React.ReactNode;
 }
@@ -29,13 +29,13 @@ export function Header({ variant = "bento", sticky = false, links, actionButton 
 
   useEffect(() => {
     const supabase = createClient();
-    
+
     const fetchUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
       setLoadingAuth(false);
     };
-    
+
     fetchUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -90,7 +90,7 @@ export function Header({ variant = "bento", sticky = false, links, actionButton 
                 <Link href="/profile" className="w-10 h-10 rounded-full bg-zinc-800 border-2 border-[#ccff00] flex items-center justify-center text-[#ccff00] font-bold hover:bg-zinc-700 transition-colors shadow-[0_0_10px_rgba(204,255,0,0.2)]">
                   {user.email?.charAt(0).toUpperCase() || 'U'}
                 </Link>
-                <button 
+                <button
                   onClick={async () => {
                     const supabase = createClient();
                     await supabase.auth.signOut();
@@ -145,7 +145,7 @@ export function Header({ variant = "bento", sticky = false, links, actionButton 
               <Link href="/profile" className="w-10 h-10 rounded-full bg-zinc-800 border-2 border-[#ccff00] flex items-center justify-center text-[#ccff00] font-bold hover:bg-zinc-700 transition-colors shadow-[0_0_10px_rgba(204,255,0,0.2)]">
                 {user.email?.charAt(0).toUpperCase() || 'U'}
               </Link>
-              <button 
+              <button
                 onClick={async () => {
                   const supabase = createClient();
                   await supabase.auth.signOut();
