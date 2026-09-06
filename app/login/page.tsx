@@ -52,8 +52,16 @@ export default function LoginPage() {
         return;
       }
 
-      // Success - Redirect to pitches
-      router.push("/pitches");
+      // Success - Redirect based on role
+      const userRole = data.data?.role;
+      if (userRole === "owner") {
+        router.push("/dashboard");
+      } else if (userRole === "super_admin") {
+        router.push("/superadmin");
+      } else {
+        router.push("/pitches");
+      }
+      
       router.refresh();
     } catch (err) {
       setError("An unexpected network error occurred.");

@@ -3,6 +3,8 @@ import { AuthService } from "@/services/auth.service";
 import { loginSchema } from "@/lib/validations/auth";
 import { createErrorResponse, createSuccessResponse } from "@/types/api";
 
+import { createClient } from "@/utils/supabase/server";
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -21,10 +23,19 @@ export async function POST(req: NextRequest) {
     // 2. Call Service
     const user = await AuthService.login(validationResult.data);
 
-    // 3. Return Clean Response
+    // 3. Fetch Role
+    const supabase = await createClient();
+    const { data: roleData } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user?.id)
+      .single();
+
+    // 4. Return Clean Response
     return createSuccessResponse({
       id: user?.id,
       email: user?.email,
+      role: roleData?.role || "user",
     });
   } catch (error: any) {
     console.error("[LOGIN_ERROR]", error);

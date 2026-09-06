@@ -31,6 +31,7 @@ export default function PitchDetailsPage() {
   const [isBooking, setIsBooking] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [bookingError, setBookingError] = useState("");
+  const [customerName, setCustomerName] = useState("");
 
   useEffect(() => {
     const fetchPitch = async () => {
@@ -72,7 +73,7 @@ export default function PitchDetailsPage() {
   }, [selectedBsDate, params.id]);
 
   const handleBooking = async () => {
-    if (!pitch || !selectedBsDate || !selectedTimeSlot) return;
+    if (!pitch || !selectedBsDate || !selectedTimeSlot || !customerName.trim()) return;
     
     setIsBooking(true);
     setBookingError("");
@@ -86,6 +87,7 @@ export default function PitchDetailsPage() {
           bookingDate: selectedBsDate,
           timeSlot: selectedTimeSlot,
           totalPrice: pitch.pricePerHour + 50,
+          customerName: customerName.trim(),
         }),
       });
 
@@ -308,6 +310,21 @@ export default function PitchDetailsPage() {
                     <span className="font-black text-sm mt-0.5 text-white">{pitch.openHours}</span>
                   </div>
                 </div>
+
+                {selectedBsDate && selectedTimeSlot && !bookingSuccess && (
+                  <div className="flex flex-col bg-white/5 p-4 rounded-2xl border border-white/10 relative z-0">
+                    <label className="text-[10px] uppercase font-bold text-white/50 tracking-widest mb-2 block">
+                      Booking Name
+                    </label>
+                    <input
+                      type="text"
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      placeholder="Enter your name"
+                      className="w-full bg-zinc-950/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#ccff00] transition-colors"
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
@@ -332,18 +349,18 @@ export default function PitchDetailsPage() {
               {bookingSuccess ? (
                 <div className="w-full bg-[#ccff00]/10 border border-[#ccff00]/30 text-[#ccff00] font-black uppercase tracking-widest py-5 rounded-2xl flex items-center justify-center gap-2">
                   <CheckCircle2 className="w-5 h-5" />
-                  Booking Confirmed!
+                  Request Sent (Pending)
                 </div>
               ) : (
                 <button 
                   onClick={handleBooking}
-                  disabled={!selectedBsDate || !selectedTimeSlot || isBooking}
+                  disabled={!selectedBsDate || !selectedTimeSlot || !customerName.trim() || isBooking}
                   className="w-full bg-[#ccff00] text-black font-black uppercase tracking-widest py-5 rounded-2xl hover:scale-[1.02] active:scale-95 transition-transform flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(204,255,0,0.2)] disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
                 >
                   {isBooking ? (
                     <span className="animate-pulse">Processing...</span>
                   ) : (
-                    "Continue to Payment"
+                    "Request Booking"
                   )}
                 </button>
               )}

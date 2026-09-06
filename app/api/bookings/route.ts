@@ -13,10 +13,10 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { pitchId, bookingDate, timeSlot, totalPrice } = body;
+    const { pitchId, bookingDate, timeSlot, totalPrice, customerName } = body;
 
     // Validate payload
-    if (!pitchId || !bookingDate || !timeSlot || !totalPrice) {
+    if (!pitchId || !bookingDate || !timeSlot || !totalPrice || !customerName) {
       return createErrorResponse("Missing required fields for booking.", "BAD_REQUEST", 400);
     }
 
@@ -48,7 +48,8 @@ export async function POST(request: Request) {
         booking_date: bookingDate,
         time_slot: timeSlot,
         total_price: totalPrice,
-        status: "confirmed", // Defaulting to confirmed to simulate successful payment for now
+        customer_name: customerName,
+        status: "pending", 
       })
       .select()
       .single();

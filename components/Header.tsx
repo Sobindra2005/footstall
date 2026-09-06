@@ -32,7 +32,18 @@ export function Header({ variant = "bento", sticky = false, links, actionButton 
 
     const fetchUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        const { data: roleData } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", session.user.id)
+          .single();
+          
+        setUser({ ...session.user, role: roleData?.role || 'user' });
+      } else {
+        setUser(null);
+      }
       setLoadingAuth(false);
     };
 
@@ -87,6 +98,16 @@ export function Header({ variant = "bento", sticky = false, links, actionButton 
               </div>
             ) : user ? (
               <div className="flex items-center gap-4">
+                {user.role === 'owner' && (
+                  <Link href="/dashboard" className="hidden md:block bg-white/10 text-white font-bold text-xs uppercase tracking-widest px-4 py-2 rounded-full hover:bg-white/20 transition-colors border border-white/10">
+                    Dashboard
+                  </Link>
+                )}
+                {user.role === 'super_admin' && (
+                  <Link href="/superadmin" className="hidden md:block bg-white/10 text-white font-bold text-xs uppercase tracking-widest px-4 py-2 rounded-full hover:bg-white/20 transition-colors border border-white/10">
+                    Superadmin
+                  </Link>
+                )}
                 <Link href="/profile" className="w-10 h-10 rounded-full bg-zinc-800 border-2 border-[#ccff00] flex items-center justify-center text-[#ccff00] font-bold hover:bg-zinc-700 transition-colors shadow-[0_0_10px_rgba(204,255,0,0.2)]">
                   {user.email?.charAt(0).toUpperCase() || 'U'}
                 </Link>
@@ -94,6 +115,7 @@ export function Header({ variant = "bento", sticky = false, links, actionButton 
                   onClick={async () => {
                     const supabase = createClient();
                     await supabase.auth.signOut();
+                    window.location.href = "/";
                   }}
                   className="hidden md:block text-xs font-semibold text-white/50 hover:text-white transition-colors"
                 >
@@ -142,6 +164,16 @@ export function Header({ variant = "bento", sticky = false, links, actionButton 
             </div>
           ) : user ? (
             <div className="flex items-center gap-4">
+              {user.role === 'owner' && (
+                <Link href="/dashboard" className="hidden md:block bg-white/10 text-white font-bold text-xs uppercase tracking-widest px-4 py-2 rounded-full hover:bg-white/20 transition-colors border border-white/10">
+                  Dashboard
+                </Link>
+              )}
+              {user.role === 'super_admin' && (
+                <Link href="/superadmin" className="hidden md:block bg-white/10 text-white font-bold text-xs uppercase tracking-widest px-4 py-2 rounded-full hover:bg-white/20 transition-colors border border-white/10">
+                  Superadmin
+                </Link>
+              )}
               <Link href="/profile" className="w-10 h-10 rounded-full bg-zinc-800 border-2 border-[#ccff00] flex items-center justify-center text-[#ccff00] font-bold hover:bg-zinc-700 transition-colors shadow-[0_0_10px_rgba(204,255,0,0.2)]">
                 {user.email?.charAt(0).toUpperCase() || 'U'}
               </Link>
@@ -149,6 +181,7 @@ export function Header({ variant = "bento", sticky = false, links, actionButton 
                 onClick={async () => {
                   const supabase = createClient();
                   await supabase.auth.signOut();
+                  window.location.href = "/";
                 }}
                 className="hidden md:block text-xs font-semibold text-white/50 hover:text-white transition-colors"
               >
