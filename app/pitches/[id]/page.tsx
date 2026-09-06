@@ -16,12 +16,8 @@ const timeSlots = [
   "06:00 PM", "07:00 PM", "08:00 PM", "09:00 PM", "10:00 PM"
 ];
 
-// Mock deterministic booking checker
-const checkIsBooked = (date: string, slot: string) => {
-  if (!date) return false;
-  const hash = date.charCodeAt(date.length - 1) + slot.charCodeAt(0);
-  return hash % 3 === 0;
-};
+// Remove the mock deterministic booking checker
+// const checkIsBooked = (date: string, slot: string) => { ... };
 
 export default function PitchDetailsPage() {
   const params = useParams();
@@ -30,6 +26,11 @@ export default function PitchDetailsPage() {
   const [activeImage, setActiveImage] = useState(0);
   const [selectedBsDate, setSelectedBsDate] = useState("");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+  const [isFetchingSlots, setIsFetchingSlots] = useState(false);
+  const [isBooking, setIsBooking] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [bookingError, setBookingError] = useState("");
 
   useEffect(() => {
     const fetchPitch = async () => {
@@ -46,6 +47,70 @@ export default function PitchDetailsPage() {
       fetchPitch();
     }
   }, [params.id]);
+
+  // Fetch booked slots whenever the selected date changes
+  useEffect(() => {
+    const fetchBookedSlots = async () => {
+      if (!selectedBsDate || !params.id) return;
+      setIsFetchingSlots(true);
+      try {
+        const response = await fetch(`/api/pitches/${params.id}/bookings?date=${selectedBsDate}`);
+        const result = await response.json();
+        if (result.success) {
+          setBookedSlots(result.data);
+        } else {
+          console.error("Failed to fetch booked slots:", result.error);
+        }
+      } catch (err) {
+        console.error("Error fetching booked slots:", err);
+      } finally {
+        setIsFetchingSlots(false);
+      }
+    };
+
+    fetchBookedSlots();
+  }, [selectedBsDate, params.id]);
+
+  const handleBooking = async () => {
+    if (!pitch || !selectedBsDate || !selectedTimeSlot) return;
+    
+    setIsBooking(true);
+    setBookingError("");
+    
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pitchId: params.id, // Can be slug or ID, our API handles both
+          bookingDate: selectedBsDate,
+          timeSlot: selectedTimeSlot,
+          totalPrice: pitch.pricePerHour + 50,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.status === 401) {
+        // Not authenticated, redirect to login with return URL
+        window.location.href = `/login?next=/pitches/${params.id}`;
+        return;
+      }
+
+      if (result.success) {
+        setBookingSuccess(true);
+        // Refresh booked slots to disable this newly booked slot visually immediately (though the UI changes anyway)
+        setBookedSlots((prev) => [...prev, selectedTimeSlot]);
+      } else {
+        setBookingError(result.error.message || "Failed to book pitch.");
+      }
+    } catch (err) {
+      console.error("Booking error:", err);
+      setBookingError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsBooking(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -180,6 +245,8 @@ export default function PitchDetailsPage() {
                       onChange={(bsDate) => {
                         setSelectedBsDate(bsDate);
                         setSelectedTimeSlot(""); // reset time slot on date change
+                        setBookingSuccess(false); // reset success state
+                        setBookingError("");
                       }}
                       placeholder="Choose Date"
                       variant="button"
@@ -193,29 +260,41 @@ export default function PitchDetailsPage() {
                       <Clock className="w-5 h-5 shrink-0 text-[#ccff00]" />
                       <span className="text-[10px] uppercase font-bold text-white/50 tracking-widest">Select Time Slot</span>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 max-h-[140px] overflow-y-auto pr-1 hide-scrollbar">
-                      {timeSlots.map(slot => {
-                        const isBooked = checkIsBooked(selectedBsDate, slot);
-                        const isSelected = selectedTimeSlot === slot;
-                        return (
-                          <button
-                            key={slot}
-                            disabled={isBooked}
-                            onClick={() => setSelectedTimeSlot(slot)}
-                            className={`py-2 px-1 text-xs font-bold rounded-lg border transition-all ${
-                              isBooked 
-                                ? 'bg-black/20 text-white/30 border-white/5 cursor-not-allowed line-through' 
-                                : isSelected 
-                                  ? 'bg-[#ccff00] text-black border-[#ccff00] scale-105' 
-                                  : 'bg-white/5 text-white border-white/10 hover:bg-white/10 hover:border-white/20'
-                            }`}
-                          >
-                            {slot}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    {!selectedTimeSlot && (
+                    
+                    {isFetchingSlots ? (
+                      <div className="py-8 text-center text-xs font-bold uppercase tracking-widest text-white/40 animate-pulse">
+                        Loading availability...
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-3 gap-2 max-h-[140px] overflow-y-auto pr-1 hide-scrollbar">
+                        {timeSlots.map(slot => {
+                          const isBooked = bookedSlots.includes(slot);
+                          const isSelected = selectedTimeSlot === slot;
+                          return (
+                            <button
+                              key={slot}
+                              disabled={isBooked}
+                              onClick={() => {
+                                setSelectedTimeSlot(slot);
+                                setBookingSuccess(false);
+                                setBookingError("");
+                              }}
+                              className={`py-2 px-1 text-xs font-bold rounded-lg border transition-all ${
+                                isBooked 
+                                  ? 'bg-black/20 text-white/30 border-white/5 cursor-not-allowed line-through' 
+                                  : isSelected 
+                                    ? 'bg-[#ccff00] text-black border-[#ccff00] scale-105' 
+                                    : 'bg-white/5 text-white border-white/10 hover:bg-white/10 hover:border-white/20'
+                              }`}
+                            >
+                              {slot}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                    
+                    {!selectedTimeSlot && !isFetchingSlots && (
                       <div className="mt-3 text-center text-[10px] uppercase font-bold text-white/50">
                         Please select an available slot
                       </div>
@@ -243,12 +322,31 @@ export default function PitchDetailsPage() {
                   <span className="text-[#ccff00]">NPR {pitch.pricePerHour + 50}</span>
                 </div>
               </div>
-              <button 
-                disabled={!selectedBsDate || !selectedTimeSlot}
-                className="w-full bg-[#ccff00] text-black font-black uppercase tracking-widest py-5 rounded-2xl hover:scale-[1.02] active:scale-95 transition-transform flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(204,255,0,0.2)] disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
-              >
-                Continue to Payment
-              </button>
+              
+              {bookingError && (
+                <div className="mb-4 text-xs font-bold text-red-400 bg-red-400/10 border border-red-400/20 p-3 rounded-lg text-center">
+                  {bookingError}
+                </div>
+              )}
+
+              {bookingSuccess ? (
+                <div className="w-full bg-[#ccff00]/10 border border-[#ccff00]/30 text-[#ccff00] font-black uppercase tracking-widest py-5 rounded-2xl flex items-center justify-center gap-2">
+                  <CheckCircle2 className="w-5 h-5" />
+                  Booking Confirmed!
+                </div>
+              ) : (
+                <button 
+                  onClick={handleBooking}
+                  disabled={!selectedBsDate || !selectedTimeSlot || isBooking}
+                  className="w-full bg-[#ccff00] text-black font-black uppercase tracking-widest py-5 rounded-2xl hover:scale-[1.02] active:scale-95 transition-transform flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(204,255,0,0.2)] disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
+                >
+                  {isBooking ? (
+                    <span className="animate-pulse">Processing...</span>
+                  ) : (
+                    "Continue to Payment"
+                  )}
+                </button>
+              )}
             </div>
             
             {/* Background Graphic */}
