@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+
 import { createClient } from "@/utils/supabase/server";
 import { LoginInput, SignupInput } from "@/lib/validations/auth";
 
@@ -8,8 +8,7 @@ export class AuthService {
    * Handles the async cookieStore internally.
    */
   private static async getClient() {
-    const cookieStore = await cookies();
-    return createClient(cookieStore);
+    return createClient();
   }
 
   /**
