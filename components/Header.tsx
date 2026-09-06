@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { Loader2 } from "lucide-react";
 
 export interface HeaderProps {
   /** 
@@ -22,6 +24,26 @@ export interface HeaderProps {
 
 export function Header({ variant = "bento", sticky = false, links, actionButton }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [loadingAuth, setLoadingAuth] = useState(true);
+
+  useEffect(() => {
+    const supabase = createClient();
+    
+    const fetchUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      setLoadingAuth(false);
+    };
+    
+    fetchUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,11 +80,39 @@ export function Header({ variant = "bento", sticky = false, links, actionButton 
             ))}
           </div>
 
-          {actionButton || (
-            <button className="bg-[#ccff00] text-black font-semibold text-sm px-6 py-2.5 rounded-full hover:bg-white transition-colors shadow-[0_0_15px_rgba(204,255,0,0.4)]">
-              Book a Pitch
-            </button>
-          )}
+          <div className="flex items-center gap-4">
+            {loadingAuth ? (
+              <div className="w-10 h-10 flex items-center justify-center">
+                <Loader2 className="w-5 h-5 text-zinc-500 animate-spin" />
+              </div>
+            ) : user ? (
+              <div className="flex items-center gap-4">
+                <Link href="/profile" className="w-10 h-10 rounded-full bg-zinc-800 border-2 border-[#ccff00] flex items-center justify-center text-[#ccff00] font-bold hover:bg-zinc-700 transition-colors shadow-[0_0_10px_rgba(204,255,0,0.2)]">
+                  {user.email?.charAt(0).toUpperCase() || 'U'}
+                </Link>
+                <button 
+                  onClick={async () => {
+                    const supabase = createClient();
+                    await supabase.auth.signOut();
+                  }}
+                  className="hidden md:block text-xs font-semibold text-white/50 hover:text-white transition-colors"
+                >
+                  Log out
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link href="/login" className="hidden md:block text-sm font-semibold text-white/90 hover:text-white transition-colors">
+                  Log in
+                </Link>
+                {actionButton || (
+                  <Link href="/signup" className="bg-[#ccff00] text-black font-semibold text-sm px-6 py-2.5 rounded-full hover:bg-white transition-colors shadow-[0_0_15px_rgba(204,255,0,0.4)] inline-block">
+                    Sign up
+                  </Link>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </nav>
     );
@@ -85,11 +135,39 @@ export function Header({ variant = "bento", sticky = false, links, actionButton 
             </Link>
           ))}
         </div>
-        {actionButton || (
-          <Link href="/pitches" className="bg-white/10 text-white font-bold text-xs uppercase tracking-widest px-6 py-3 rounded-full hover:bg-white/20 transition-colors border border-white/10">
-            Back to Directory
-          </Link>
-        )}
+        <div className="flex items-center gap-4">
+          {loadingAuth ? (
+            <div className="w-10 h-10 flex items-center justify-center">
+              <Loader2 className="w-5 h-5 text-zinc-500 animate-spin" />
+            </div>
+          ) : user ? (
+            <div className="flex items-center gap-4">
+              <Link href="/profile" className="w-10 h-10 rounded-full bg-zinc-800 border-2 border-[#ccff00] flex items-center justify-center text-[#ccff00] font-bold hover:bg-zinc-700 transition-colors shadow-[0_0_10px_rgba(204,255,0,0.2)]">
+                {user.email?.charAt(0).toUpperCase() || 'U'}
+              </Link>
+              <button 
+                onClick={async () => {
+                  const supabase = createClient();
+                  await supabase.auth.signOut();
+                }}
+                className="hidden md:block text-xs font-semibold text-white/50 hover:text-white transition-colors"
+              >
+                Log out
+              </button>
+            </div>
+          ) : (
+            <>
+              <Link href="/login" className="hidden md:block text-sm font-semibold text-white/70 hover:text-white transition-colors">
+                Log in
+              </Link>
+              {actionButton || (
+                <Link href="/pitches" className="bg-white/10 text-white font-bold text-xs uppercase tracking-widest px-6 py-3 rounded-full hover:bg-white/20 transition-colors border border-white/10 inline-block">
+                  Back to Directory
+                </Link>
+              )}
+            </>
+          )}
+        </div>
       </nav>
     </div>
   );
