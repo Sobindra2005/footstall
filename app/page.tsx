@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 import Lenis from "lenis";
 import { Header } from "@/components/Header";
+import { CustomSelect } from "@/components/CustomSelect";
+import { CustomDatePicker } from "@/components/CustomDatePicker";
 
 const heroSteps = [
   {
@@ -136,6 +138,7 @@ const tacticsData = [
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
 
   useEffect(() => {
     const lenis = new Lenis();
@@ -492,31 +495,30 @@ export default function Home() {
               <MapPin className="text-[#ccff00] w-5 h-5 shrink-0" />
               <div className="flex flex-col items-start w-full text-left">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-white/50 mb-1">Location</span>
-                <input
-                  type="text"
-                  placeholder="Where do you want to play?"
-                  className="bg-transparent text-white placeholder:text-white/40 focus:outline-none w-full font-semibold text-base"
+                <CustomSelect
+                  options={[
+                    { value: "kathmandu", label: "Kathmandu" },
+                    { value: "lalitpur", label: "Lalitpur" },
+                    { value: "bhaktapur", label: "Bhaktapur" },
+                    { value: "pokhara", label: "Pokhara" }
+                  ]}
+                  value={selectedLocation}
+                  onChange={setSelectedLocation}
+                  placeholder="Where to play?"
                 />
               </div>
             </div>
 
-            <div className="flex-1 flex items-center gap-3 px-6 py-3 transition-colors focus-within:bg-white/5 relative group cursor-pointer">
+            <div className="flex-1 flex items-center gap-3 px-6 py-3 transition-colors focus-within:bg-white/5 relative group cursor-pointer md:rounded-r-full">
               <Calendar className="text-[#ccff00] w-5 h-5 shrink-0" />
               <div className="flex flex-col items-start w-full text-left relative">
-                <span className="text-[10px] uppercase font-bold tracking-wider text-white/50 mb-1">Date & Time</span>
-                <div className="flex items-center justify-between w-full">
-                  <span className={`font-semibold text-base ${selectedDate ? 'text-white' : 'text-white/40'}`}>
-                    {selectedDate ? new Date(selectedDate).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : "Select Date & Time"}
-                  </span>
-                  <ChevronDown className="w-4 h-4 text-white/50 group-hover:text-white/80 transition-colors" />
-                </div>
-                {/* Native OS Picker overlay */}
-                <input
-                  type="datetime-local"
-                  value={selectedDate}
-                  min={new Date().toISOString().slice(0, 16)}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                <span className="text-[10px] uppercase font-bold tracking-wider text-white/50 mb-1">Date</span>
+                <CustomDatePicker 
+                  value={selectedDate} 
+                  onChange={setSelectedDate} 
+                  variant="unstyled"
+                  placeholder="Select Date"
+                  className="w-full"
                 />
               </div>
             </div>

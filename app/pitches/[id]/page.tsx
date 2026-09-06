@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { MapPin, Star, Clock, CheckCircle2, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
-import { NepaliDatePicker } from "@/components/NepaliDatePicker";
+import { CustomDatePicker } from "@/components/CustomDatePicker";
 import { useEffect, useState } from "react";
 
 // Mock function to get available time slots (normally derived from openHours and backend)
@@ -104,7 +104,7 @@ export default function PitchDetailsPage() {
           </div>
 
           {/* 2. Booking Widget (Col Span 4) */}
-          <div className="xl:col-span-4 bg-zinc-900 border border-[#ccff00]/20 rounded-[1.5rem] p-5 md:p-6 text-white flex flex-col justify-between relative overflow-hidden shadow-[0_20px_50px_rgba(204,255,0,0.05)]">
+          <div className="xl:col-span-4 bg-zinc-900 border border-[#ccff00]/20 rounded-[1.5rem] p-5 md:p-6 text-white flex flex-col justify-between relative shadow-[0_20px_50px_rgba(204,255,0,0.05)]">
             <div>
               <div className="text-[10px] uppercase font-bold tracking-[0.3em] text-white/50 mb-2">Book This Pitch</div>
               <div className="flex items-baseline gap-2 mb-8">
@@ -117,9 +117,9 @@ export default function PitchDetailsPage() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <CalendarIcon className="w-5 h-5 shrink-0 text-[#ccff00]" />
-                      <span className="text-[10px] uppercase font-bold text-white/50 tracking-widest">Select Date (BS)</span>
+                      <span className="text-[10px] uppercase font-bold text-white/50 tracking-widest">Select Date</span>
                     </div>
-                    <NepaliDatePicker 
+                    <CustomDatePicker 
                       value={selectedBsDate}
                       onChange={(bsDate) => {
                         setSelectedBsDate(bsDate);

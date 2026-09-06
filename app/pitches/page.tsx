@@ -4,11 +4,13 @@ import { dummyPitches } from "@/data/pitches";
 import { MapPin, Star, ArrowRight, Search } from "lucide-react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
-import { NepaliDatePicker } from "@/components/NepaliDatePicker";
+import { CustomDatePicker } from "@/components/CustomDatePicker";
+import { CustomSelect } from "@/components/CustomSelect";
 import { useState } from "react";
 
 export default function PitchesPage() {
   const [selectedBsDate, setSelectedBsDate] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
   return (
     <div className="min-h-screen bg-zinc-950 text-white selection:bg-[#ccff00] selection:text-black">
       
@@ -47,23 +49,31 @@ export default function PitchesPage() {
             </div>
             
             {/* Filter by Date */}
-            <NepaliDatePicker 
-              value={selectedBsDate}
-              onChange={setSelectedBsDate}
-              placeholder="Filter by Date (BS)"
-              variant="input"
-              className="flex-1"
-            />
+            <div className="flex-1 bg-white/5 rounded-xl flex items-center border border-transparent focus-within:border-white/20 transition-colors relative">
+              <CustomDatePicker 
+                value={selectedBsDate}
+                onChange={setSelectedBsDate}
+                placeholder="Filter by Date"
+                variant="input"
+                className="w-full h-full"
+              />
+            </div>
 
             {/* Filter by Location */}
             <div className="flex-1 bg-white/5 rounded-xl flex items-center px-4 py-3 border border-transparent focus-within:border-white/20 transition-colors relative group">
-              <MapPin className="w-4 h-4 text-white/50 shrink-0" />
-              <select className="bg-transparent border-none outline-none text-sm text-white w-full font-medium appearance-none ml-3">
-                <option value="" className="bg-zinc-900">Nearby Me (Any)</option>
-                <option value="kathmandu" className="bg-zinc-900">Kathmandu</option>
-                <option value="lalitpur" className="bg-zinc-900">Lalitpur</option>
-                <option value="bhaktapur" className="bg-zinc-900">Bhaktapur</option>
-              </select>
+              <CustomSelect 
+                options={[
+                  { value: "any", label: "Nearby Me (Any)" },
+                  { value: "kathmandu", label: "Kathmandu" },
+                  { value: "lalitpur", label: "Lalitpur" },
+                  { value: "bhaktapur", label: "Bhaktapur" },
+                ]}
+                value={selectedLocation}
+                onChange={setSelectedLocation}
+                placeholder="Nearby Me (Any)"
+                icon={<MapPin className="w-4 h-4 text-white/50 shrink-0" />}
+                className="w-full"
+              />
             </div>
           </div>
         </header>
